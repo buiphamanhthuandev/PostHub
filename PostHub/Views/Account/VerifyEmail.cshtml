@@ -1,0 +1,27 @@
+﻿@model VerifyEmailViewModel
+@{
+    ViewBag.Title = "VerifyEmail";
+    Layout = "_AccountLayout";
+}
+<div class="account-container">
+    <div class="account-box">
+        <h3 class="text-center mb-4">VerifyEmail</h3>
+        <form method="post" asp-action="VerifyEmail">
+            <div asp-validation-summary="ModelOnly"></div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email"class="form-control"/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <input type="submit" class="btn btn-success w-100 p-2" />
+            <div class="text-center">
+                <a asp-action="Index" asp-controller="Home" class="text-decoration-none mt-3">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
