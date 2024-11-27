@@ -1,5 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PostHub.Areas.Admin.Repositories.Categories;
+using PostHub.Areas.Admin.Repositories.CategoryTypes;
+using PostHub.Areas.Admin.Repositories.Comments;
+using PostHub.Areas.Admin.Repositories.Contacts;
+using PostHub.Areas.Admin.Repositories.Posts;
+using PostHub.Areas.Admin.Repositories.Subscribes;
 using PostHub.Data;
 using PostHub.Models;
 
@@ -26,6 +32,14 @@ builder.Services.AddIdentity<User, IdentityRole>(opts =>
 
 }).AddEntityFrameworkStores<PostHubDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<ICategoryTypeRepository,EFCategoryTypeRepository>();
+builder.Services.AddScoped<ICategoryRepository,EFCategoryRepository>();
+builder.Services.AddScoped<ISubscribeRepository,EFSubscribeRepository>();
+builder.Services.AddScoped<IContactRepository,EFContactRepository>();
+builder.Services.AddScoped<ICommentRepository,EFCommentRepository>();
+builder.Services.AddScoped<IPostRepository,EFPostRepository>();
+
 
 var app = builder.Build();
 

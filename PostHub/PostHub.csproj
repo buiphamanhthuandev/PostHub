@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -19,15 +19,10 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Admin\Repositories\Contacts\" />
-    <Folder Include="Areas\Admin\Repositories\Comments\" />
-    <Folder Include="Areas\Admin\Repositories\Categories\" />
-    <Folder Include="Areas\Admin\Repositories\CategoryTypes\" />
-    <Folder Include="Areas\Admin\Repositories\Subscribes\" />
-    <Folder Include="Areas\Admin\Repositories\Posts\" />
     <Folder Include="Areas\Admin\Repositories\Users\" />
-    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Repositories\" />
+    <Folder Include="wwwroot\admin\" />
+    <Folder Include="wwwroot\user\" />
   </ItemGroup>
 
 </Project>

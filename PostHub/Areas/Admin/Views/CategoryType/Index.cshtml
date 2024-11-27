@@ -1,0 +1,52 @@
+﻿@model IEnumerable<CategoryType>
+@{
+    ViewBag.Title = "Trang CategoryType";
+}
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800"><a asp-action="Create" asp-controller="CategoryType" asp-area="Admin" class="text-decoration-none text-dark btn btn-primary">Thêm CategoryType</a></h1>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách CategoryType</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Edit</th>
+                        <th>Del</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Edit</th>
+                        <th>Del</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach(var c in Model ?? Enumerable.Empty<CategoryType>())
+                    {
+                        <tr>
+                            <td>@c.Id</td>
+                            <td>@c.Name</td>
+                            <td><a asp-action="Edit" asp-controller="CategoryType" asp-area="Admin" class="btn btn-warning" asp-route-id="@c.Id">Edit</a></td>
+                            <td>
+                                <form asp-action="Delete" asp-controller="CategoryType" asp-area="Admin" method="post">
+                                    <input type="hidden" name="id" value="@c.Id"/>
+                                    <input type="submit" name="del" value="Del" class="btn btn-danger"/>
+                                </form>
+                            </td>
+                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

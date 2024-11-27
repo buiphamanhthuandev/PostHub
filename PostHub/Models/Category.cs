@@ -6,7 +6,7 @@ namespace PostHub.Models
     {
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public int State { get; set; } = 1;
         [Required]
         public int CategoryType_id { get; set; }

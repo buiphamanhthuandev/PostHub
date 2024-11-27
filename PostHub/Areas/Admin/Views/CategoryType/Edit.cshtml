@@ -1,0 +1,14 @@
+﻿@model CategoryTypeViewModel
+@{
+    ViewBag.Title = "Trang Edit CategoryType";
+}
+<h3><a asp-action="Index" asp-controller="CategoryType" asp-area="Admin" class="text-decoration-none text-dark btn btn-primary">View All CategoryType</a></h3>
+<form asp-action="Edit" asp-controller="CategoryType" asp-area="Admin" method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Add</button>
+</form>

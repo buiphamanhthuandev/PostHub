@@ -10,14 +10,12 @@ namespace PostHub.Data
         {
         }
         
-        DbSet<CategoryType> CategoryTypes { get; set; }
-        DbSet<Category> Categories { get; set; }
-        DbSet<Post> Posts { get; set; }
-        DbSet<Subscribe> Subscribes { get; set; }
-        DbSet<Contact> Contacts { get; set; }
-        DbSet<Comment> Comments { get; set; }
-
-
+        public DbSet<CategoryType> CategoryTypes { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Subscribe> Subscribes { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }
 

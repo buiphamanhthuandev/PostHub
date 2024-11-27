@@ -6,12 +6,12 @@ namespace PostHub.Models
     {
         public int Id { get; set; }
         [Required]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         [Required]
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         [Required]
-        public string Image { get; set; }
+        public string Image { get; set; } = string.Empty;
         public int View { get; set; } = 0;
         public DateTime CreateAt { get; set; } = DateTime.Now;
         [Required]
