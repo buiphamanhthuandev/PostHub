@@ -1,0 +1,58 @@
+﻿@model IEnumerable<User>
+@{
+    ViewBag.Title = "Index Account";
+}
+
+<h3 class="h3 mb-2 text-gray-800"><a asp-action="Create" asp-controller="User" asp-area="Admin" class="text-decoration-none text-dark btn btn-primary">Create User</a></h3>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">List Account</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>FullName</th>
+                        <th>Email</th>
+                        <th>DateOfBirth</th>
+                        <th>ProfileImage</th>
+                        <th>IsActive</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Id</th>
+                        <th>FullName</th>
+                        <th>Email</th>
+                        <th>DateOfBirth</th>
+                        <th>ProfileImage</th>
+                        <th>IsActive</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var c in Model ?? Enumerable.Empty<User>())
+                    {
+                        <tr>
+                            <td>@c.Id</td>
+                            <td>@c.FullName</td>
+                            <td>@c.Email</td>
+                            <td>@c.DateOfBirth</td>
+                            <td><img src="/Images/@c.ProfileImage" alt="@c.ProfileImage" style="width:50px; height:50px;" /></td>
+                            <td>
+                                <form asp-action="Delete" asp-controller="User" asp-area="Admin" method="post">
+                                    <input type="hidden" name="id" value="@c.Id" />
+                                    <input type="submit" name="del" value="@(c.IsActive == 0 ? "Locked" : "Not Locked")" class="btn @(c.IsActive == 0 ? "btn-warning" : "btn-success")" />
+                                </form>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
