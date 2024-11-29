@@ -14,7 +14,7 @@ namespace PostHub.Areas.Admin.Repositories.Categories
         }
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _context.Categories.Where(c => c.State == 1).ToListAsync();
+            return await _context.Categories.Include(e => e.CategoryType).Where(c => c.State == 1 && c.CategoryType != null).ToListAsync();
         }
         public async Task<Category> GetByIdAsync(int id)
         {

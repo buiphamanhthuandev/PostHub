@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Contact>
+@{
+    ViewBag.Title = "Index Contact";
+}
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">List Contact</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Email</th>
+                        <th>Content</th>
+                        <th>CreateAt</th>
+                        <th>Update State</th>
+                        <th>Del</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Id</th>
+                        <th>Email</th>
+                        <th>Content</th>
+                        <th>CreateAt</th>
+                        <th>Update State</th>
+                        <th>Del</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var c in Model ?? Enumerable.Empty<Contact>())
+                    {
+                        <tr>
+                            <td>@c.Id</td>
+                            <td>@c.Email</td>
+                            <td>@c.Content</td>
+                            <td>@c.CreatedAt</td>
+                            <td>
+                                <form asp-action="Edit" asp-controller="Contact" asp-area="Admin" method="post">
+                                    <input type="hidden" name="id" value="@c.Id"/>
+                                    <button type="submit" class="btn @(c.StateRes == 1 ? "btn-warning" : "btn-success")">@(c.StateRes == 1 ? "status not updated" : "status updated")</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form asp-action="Delete" asp-controller="Contact" asp-area="Admin" method="post">
+                                    <input type="hidden" name="id" value="@c.Id" />
+                                    <input type="submit" name="del" value="Del" class="btn btn-danger" />
+                                </form>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -5,13 +5,13 @@ namespace PostHub.Models
     public class Category
     {
         public int Id { get; set; }
-        [Required]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
         public int State { get; set; } = 1;
-        [Required]
-        public int CategoryType_id { get; set; }
+
+        public int CategoryTypeId { get; set; }
         public CategoryType CategoryType { get; set; }
 
-        public ICollection<Post> Posts { get; set; } = new List<Post>();
+        public ICollection<Post> Posts { get; set; }
     }
+
 }

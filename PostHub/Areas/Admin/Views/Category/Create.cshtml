@@ -1,0 +1,21 @@
+﻿@model CategoryViewModel
+@{
+    ViewBag.Title = "Create Category";
+}
+<h1><a asp-action="Index" class="text-decoration-none text-dark btn btn-primary">View All Category</a></h1>
+<form method="post" asp-action="Create" asp-controller="Category" asp-area="Admin">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="mb-3 form-group">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-group">
+        <label class="form-label">@Html.DisplayNameFor(c => c.CategoryTypeId)</label>
+        <select asp-for="CategoryTypeId" class="form-control" asp-items="@ViewBag.CategoryTypes"></select>
+        <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-group">
+        <input type="submit" class="btn btn-primary" value="Add"/>
+    </div>
+</form>

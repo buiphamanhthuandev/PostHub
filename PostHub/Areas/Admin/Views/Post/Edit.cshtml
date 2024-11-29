@@ -1,0 +1,30 @@
+﻿@model PostViewModel
+@{
+    ViewBag.Title = "Edit Post";
+}
+<h3><a asp-action="Index" class="text-decoration-none text-dark btn btn-primary">View All List Post</a></h3>
+<form method="post" asp-action="Edit" asp-controller="Post" asp-area="Admin" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="mb-3 form-group">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-group">
+        <label asp-for="Content" class="form-label"></label>
+        <input asp-for="Content" class="form-control" />
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-group">
+        <label asp-for="Image" class="form-label"></label>
+        <input asp-for="Image" class="form-control" type="file" />
+    </div>
+    <div class="mb-3 form-group">
+        <label asp-for="CategoryId" class="form-label"></label>
+        <select asp-for="CategoryId" class="form-control" asp-items="@ViewBag.Categories"></select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-group">
+        <input type="submit" class="btn btn-primary" value="Edit" />
+    </div>
+</form>

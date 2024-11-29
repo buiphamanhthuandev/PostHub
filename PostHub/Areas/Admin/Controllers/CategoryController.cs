@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +15,16 @@ using PostHub.Models;
 namespace PostHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "admin")]
     public class CategoryController : Controller
     {
         private readonly ICategoryRepository _repository;
         private readonly ICategoryTypeRepository _categoryTypeRepository;
 
-        public CategoryController(ICategoryRepository repository)
+        public CategoryController(ICategoryRepository repository, ICategoryTypeRepository categoryTypeRepository)
         {
             _repository = repository;
+            _categoryTypeRepository = categoryTypeRepository;
         }
 
 
@@ -34,7 +37,7 @@ namespace PostHub.Areas.Admin.Controllers
         // GET: Admin/Category/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync());
+            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync(), "Id", "Name");
             return View();
         }
 
@@ -47,18 +50,19 @@ namespace PostHub.Areas.Admin.Controllers
                 var category = new Category
                 {
                     Name = model.Name,
-                    CategoryType_id = model.CategoryType_id,
+                    CategoryTypeId = model.CategoryTypeId,
                 };
                 await _repository.AddAsync(category);
                 return RedirectToAction("Index");
             }
+            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync(), "Id", "Name");
             return View(model);
         }
 
         // GET: Admin/Category/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync());
+            
             var result = await _repository.GetByIdAsync(id);
             if (result == null)
             {
@@ -67,8 +71,9 @@ namespace PostHub.Areas.Admin.Controllers
             var category = new CategoryViewModel
             {
                 Name = result.Name,
-                CategoryType_id = result.CategoryType_id
+                CategoryTypeId = result.CategoryTypeId
             };
+            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync(), "Id", "Name");
             return View(category);
         }
 
@@ -84,10 +89,11 @@ namespace PostHub.Areas.Admin.Controllers
                     return View(model);
                 }
                 category.Name = model.Name;
-                category.CategoryType_id = model.CategoryType_id;
+                category.CategoryTypeId = model.CategoryTypeId;
                 await _repository.UpdateAsync(category);
                 return RedirectToAction("Index");
             }
+            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync(), "Id", "Name");
             return View(model);
         }
         [HttpPost]
@@ -100,7 +106,6 @@ namespace PostHub.Areas.Admin.Controllers
                 category.State = 0;
                 await _repository.UpdateAsync(category);
             }
-
             return RedirectToAction("Index");
         }
     }

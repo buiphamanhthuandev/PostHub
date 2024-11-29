@@ -1,3 +1,4 @@
+#nullable enable
 namespace PostHub.Models
 {
     public class ErrorViewModel

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PostHub.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace PostHub.Areas.Admin.ViewModels
 {
@@ -7,6 +8,8 @@ namespace PostHub.Areas.Admin.ViewModels
         [Required(ErrorMessage = "Name is required!")]
         public string Name { get; set; }
         [Required(ErrorMessage = "CategoryType is required!")]
-        public int CategoryType_id { get; set; }
+        [Display(Name ="CategoryType")]
+        public int CategoryTypeId { get; set; }
+
     }
 }

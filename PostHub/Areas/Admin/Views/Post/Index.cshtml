@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Post>
+@{
+    ViewBag.Title = "Index Post";
+}
+<h3 class="h3 mb-2 text-gray-800"><a asp-action="Create" asp-controller="Post" asp-area="Admin" class="text-decoration-none text-dark btn btn-primary">Create Post</a></h3>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">List Post</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Tilte</th>
+                        <th>Slug</th>
+                        <th>Content</th>
+                        <th>Image</th>
+                        <th>CreateAt</th>
+                        <th>Category</th>
+                        <th>View</th>
+                        <th>Edit</th>
+                        <th>Del</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Id</th>
+                        <th>Tilte</th>
+                        <th>Slug</th>
+                        <th>Content</th>
+                        <th>Image</th>
+                        <th>CreateAt</th>
+                        <th>Category</th>
+                        <th>View</th>
+                        <th>Edit</th>
+                        <th>Del</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var c in Model ?? Enumerable.Empty<Post>())
+                    {
+                        <tr>
+                            <td>@c.Id</td>
+                            <td>@c.Title</td>
+                            <td>@c.Slug</td>
+                            <td>@c.Content</td>
+                            <td><img src="/Images/@c.Image" alt="@c.Image" style="width:50px; height:50px;"/></td>
+                            <td>@c.CreateAt</td>
+                            <td>@c.Category.Name</td>
+                            <td>@c.View</td>
+                            <td>
+                                <a asp-action="Edit" asp-controller="Post" asp-area="Admin" asp-route-id="@c.Id" class="btn btn-warning">Edit</a>
+                            </td>
+                            <td>
+                                <form asp-action="Delete" asp-controller="Post" asp-area="Admin" method="post">
+                                    <input type="hidden" name="id" value="@c.Id" />
+                                    <input type="submit" name="del" value="Del" class="btn btn-danger" />
+                                </form>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

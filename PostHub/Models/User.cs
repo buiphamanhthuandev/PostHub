@@ -9,7 +9,6 @@ namespace PostHub.Models
         public int IsActive { get; set; } = 1;
 
         public string FullName { get; set; } = string.Empty;
-        public ICollection<Post> Posts { get; set; } = new List<Post>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     }
