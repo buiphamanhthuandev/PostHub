@@ -16,5 +16,9 @@ namespace PostHub.Areas.Admin.Repositories.Subscribes
         {
             return await _context.Subscribes.ToListAsync();
         }
+        public async Task<int> GetCount()
+        {
+            return await _context.Subscribes.CountAsync();
+        }
     }
 }

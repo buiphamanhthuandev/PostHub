@@ -9,5 +9,6 @@ namespace PostHub.Areas.Admin.Repositories.CategoryTypes
         Task AddAsync(CategoryType categoryType);
         Task UpdateAsync(CategoryType categoryType);
         Task DeleteByIdAsync(int id);
+        Task<int> GetCount();
     }
 }

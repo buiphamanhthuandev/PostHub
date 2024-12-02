@@ -9,5 +9,6 @@ namespace PostHub.Areas.Admin.Repositories.Contacts
         Task AddAsync(Contact contact);
         Task UpdateAsync(Contact contact);
         Task DeleteAsync(int id);
+        Task<int> GetCount();
     }
 }

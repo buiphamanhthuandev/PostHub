@@ -16,5 +16,9 @@ namespace PostHub.Areas.Admin.Repositories.Comments
         {
             return await _context.Comments.ToListAsync();
         }
+        public async Task<int> GetCount()
+        {
+            return await _context.Comments.CountAsync();
+        }
     }
 }

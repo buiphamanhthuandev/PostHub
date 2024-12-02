@@ -40,5 +40,9 @@ namespace PostHub.Areas.Admin.Repositories.Posts
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<int> GetCount()
+        {
+            return await _context.Posts.Where(c => c.State == 1).CountAsync();
+        }
     }
 }

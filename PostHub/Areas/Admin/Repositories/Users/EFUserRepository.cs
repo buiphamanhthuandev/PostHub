@@ -30,5 +30,9 @@ namespace PostHub.Areas.Admin.Repositories.Users
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
+        public async Task<int> GetCount()
+        {
+            return await _context.Users.Where(c => c.IsActive == 1).CountAsync();
+        }
     }
 }

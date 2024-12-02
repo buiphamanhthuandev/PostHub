@@ -9,5 +9,7 @@ namespace PostHub.Areas.Admin.Repositories.Categories
         Task AddAsync(Category category);
         Task UpdateAsync(Category category);
         Task DeleteAsync(int id);
+
+        Task<int> GetCount();
     }
 }

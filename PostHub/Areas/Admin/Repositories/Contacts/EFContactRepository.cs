@@ -39,5 +39,9 @@ namespace PostHub.Areas.Admin.Repositories.Contacts
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<int> GetCount()
+        {
+            return await _context.Contacts.CountAsync();
+        }
     }
 }

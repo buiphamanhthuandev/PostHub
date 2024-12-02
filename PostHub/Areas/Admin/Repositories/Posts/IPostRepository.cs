@@ -9,5 +9,6 @@ namespace PostHub.Areas.Admin.Repositories.Posts
         Task AddAsync(Post post);
         Task UpdateAsync(Post post);
         Task DeleteAsync(int id);
+        Task<int> GetCount();
     }
 }
