@@ -14,7 +14,7 @@ namespace PostHub.ViewModels
         public string NewPassword { get; set; }
         [Required(ErrorMessage = "ConfirmPassword is required.")]
         [DataType(DataType.Password)]
-        [Display(Name ="Confirm Password Required.")]
+        [Display(Name = "Confirm Password Required.")]
         public string ConfirmPassword { get; set; }
     }
 }

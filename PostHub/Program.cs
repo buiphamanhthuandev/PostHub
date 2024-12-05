@@ -9,6 +9,7 @@ using PostHub.Areas.Admin.Repositories.Subscribes;
 using PostHub.Areas.Admin.Repositories.Users;
 using PostHub.Data;
 using PostHub.Models;
+using PostHub.Repositories.ManagerRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,7 @@ builder.Services.AddScoped<ICommentRepository,EFCommentRepository>();
 builder.Services.AddScoped<IPostRepository,EFPostRepository>();
 builder.Services.AddScoped<IUserRepository,EFUserRepository>();
 
+builder.Services.AddScoped<IUserManagerRepository,UserManagerRepository>();
 
 var app = builder.Build();
 
