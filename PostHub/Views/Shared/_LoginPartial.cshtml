@@ -3,12 +3,12 @@
 @inject UserManager<User> userManager
 @if (signInManager.IsSignedIn(User))
 {     
-           @* @userManager.GetUserAsync(User).Result.ProfileImage *@
+          
     <div class="d-flex align-items-center justify-content-between ms-6">
         <div class="text-dark m-2">
             @userManager.GetUserName(User)
         </div>
-        <img class="img-profile rounded-circle m-2" src="/Images/account_bg.png" style="width:40px; height:40px;">
+        <img class="img-profile rounded-circle m-2" src="/Images/@userManager.GetUserAsync(User).Result.ProfileImage" style="width:40px; height:40px;">
     </div>
     <div class="m-2">
         <a class="nav-link text-dark " asp-area="" asp-action="Logout" asp-controller="Account">Đăng xuất</a>

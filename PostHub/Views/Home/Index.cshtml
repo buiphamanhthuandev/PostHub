@@ -1,8 +1,38 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@section Scripts {
+    <script src="/js/notification.js"></script>
+}
+@model HomeViewModel
+@{
+    ViewBag.Title = "Trang chủ";
+}
+<h4><strong>Trang chủ</strong></h4>
+@if(TempData["MessageAddSubSuccess"] != null){
+    <div id="messageAddSubSuccess" class="bg-success d-flex align-items-center text-white" style="height:50px">
+        @TempData["MessageAddSubSuccess"]
+    </div>
+}
+@if(TempData["MessageAddSubError"] != null){
+    <div id="messageAddSubError" class="bg-danger d-flex align-items-center text-white" style="height:50px;" >
+        @TempData["MessageAddSubError"]
+    </div>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div class="row">
+                
+    @foreach (var post in Model.Posts ?? Enumerable.Empty<Post>())
+    {
+        <div class="card col-6" >
+            <a class="text-decoration-none" style="color:black;" asp-action="Detail" asp-controller="Home" asp-route-id="@post.Id">
+                <img class="card-img-top " style="width:350px; height:200px" src="/Images/@post.Image" alt="@post.Image">
+                <div class="card-body">
+                    <h5 class="card-title">@post.Title</h5>
+                    <p class="card-text">@post.Content.Substring(0, 75)...</p>
+                </div>
+            </a> 
+        </div>
+    }
 </div>
+<div page-model="@Model.PagingInfo" page-action="Index" page-class="btn" page-url-category="@Model?.CurrentCategory" page-classes-enable="true" page-class-normal="btn-outline-dark" page-class-selected="btn-primary" class="btn-group m-1 text-black"></div>
+
+        

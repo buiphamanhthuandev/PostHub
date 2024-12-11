@@ -24,6 +24,9 @@ namespace PostHub.TagHelpers
         public PagingInfo PageModel { get; set; }
         public string PageAction { get; set; }
 
+        [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]
+        public Dictionary<string, object> PageUrlValues { get; set; } = new Dictionary<string, object>();
+
         public bool PageClassesEnable { get; set; } = false;
         public string PageClass { get; set; } = string.Empty;
         public string PageClassSelected { get; set; } = string.Empty;
@@ -36,7 +39,8 @@ namespace PostHub.TagHelpers
                 TagBuilder result = new TagBuilder("div");
                 for (int i = 1; i <= PageModel.TotalPages; i++){
                     TagBuilder tag = new TagBuilder("a");
-                    tag.Attributes["href"] = urlHelper.Action(PageAction, new {Page = i});
+                    PageUrlValues["Page"] = i;
+                    tag.Attributes["href"] = urlHelper.Action(PageAction, PageUrlValues);
                     if (PageClassesEnable)
                     {
                         tag.AddCssClass(PageClass);

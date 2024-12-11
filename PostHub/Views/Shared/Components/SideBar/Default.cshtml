@@ -1,0 +1,7 @@
+﻿@model IEnumerable<Category>
+
+@foreach(var category in Model ?? Enumerable.Empty<Category>())
+{   
+    @* class="btn @(ViewData["SelectedCategory"].ToString() == category.Id.ToString() ? "btn-primary" : "btn-outline-secondary")" *@
+    <a class="text-decoration-none btn " style="width:144px; font-size:14px" asp-action="Index" asp-controller="Home" asp-route-postId="@category.Id">@category.Name</a>
+}
