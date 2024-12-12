@@ -1,0 +1,13 @@
+﻿@model IEnumerable<CategoryType>
+@foreach(var categoryTypes in Model ?? Enumerable.Empty<CategoryType>())
+{
+    <li class="nav-item dropdown">
+        <a class="dropcap1">@categoryTypes.Name</a>
+        <div class="dropdown-content1">
+            @foreach (var categories in categoryTypes.Categories)
+            {
+                <a style="width:144px; font-size:14px" asp-action="Index" asp-controller="Home" asp-route-postId="@categories.Id">@categories.Name</a>    
+            }
+        </div>
+    </li>
+}

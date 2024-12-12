@@ -23,14 +23,18 @@
     <link href="/user/css/style_1.css" rel="stylesheet" type="text/css" />
     <!-- Modernizr JS -->
     <script src="/user/js/modernizr-3.5.0.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    
+    <link href="/css/dropdown.css" rel="stylesheet"/>
+    
 </head>
 <body>
     <div class="container-fluid">
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-3 fh5co_padding_menu">
-                    <img src="/user/images/logo.png" alt="img" class="fh5co_logo_width" />
+                    <a asp-action="Index" asp-controller="Home">
+                        <img src="/user/images/logo.png" alt="img" class="fh5co_logo_width" />
+                    </a>
                 </div>
                 <div class="col-12 col-md-9 d-flex justify-content-lg-evenly align-items-center">
                     <div class="text-center m-5">
@@ -62,24 +66,55 @@
                 </button>
                 <a class="navbar-brand" href="#"><img src="/user/images/logo.png" alt="img" class="mobile_logo_width" /></a>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="navbar-nav mr-auto" style="color: #f5bc04;">
                         <li class="nav-item active">
                             <a class="nav-link" asp-action="Index" asp-controller="Home" asp-area="">Trang chủ</a>
                         </li>
                         
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuButton2" data-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="false">World <span class="sr-only">(current)</span></a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink_1">
-                                <a class="dropdown-item" href="#">Action in</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                                <vc:navigation-menu />
+                        @* <li class="nav-item dropdown" >
+                            
+                            <a class="dropcap1">Danh mục</a>
+                            <div class="dropdown-content1">
+                                
+                                
+                            </div>  
+                        </li> *@
+                        <vc:navigation-menu />
+                        <li class="nav-item">
+                            <div class="modal-contact" data-toggle="modal" data-target="#exampleModal">Liên hệ</div>
+                            
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Liên hệ</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form asp-action="AddContact" asp-controller="Home" method="post">
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label class="form-label">Email:</label>
+                                                    <input class="form-control " name="email"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label">Nội dung liên hệ:</label>
+                                                    <input class="form-control " name="content" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+                                                <button type="submit" class="btn btn-primary">Lưu</button>
+                                            </div>
+                                        </form>
+                                        
+                                    </div>
+                                </div>
                             </div>
                         </li>
-                        <li class="nav-item ">
-                            <a class="nav-link" asp-action="Contact" asp-controller="Home" asp-area="">Liên hệ</a>
-                        </li>
+                       
                     </ul>
                 </div>
             </nav>
@@ -150,6 +185,7 @@
         <a href="#" class="js-gotop"><i class="fa fa-arrow-up"></i></a>
     </div>
 
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="/user/js/owl.carousel.min.js"></script>
     <!--<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>-->
@@ -163,6 +199,6 @@
     <script src="/user/js/jquery.waypoints.min.js"></script>
     <!-- Main -->
     <script src="/user/js/main.js"></script>
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

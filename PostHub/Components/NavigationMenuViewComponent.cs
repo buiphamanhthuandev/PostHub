@@ -1,12 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PostHub.Repositories.ManagerRepository;
 
 namespace PostHub.Components
 {
     public class NavigationMenuViewComponent : ViewComponent
     {
-        public string Invoke()
+        private readonly IUserManagerRepository _userManagerRepository;
+
+        public NavigationMenuViewComponent(IUserManagerRepository userManagerRepository)
         {
-            return "Navigation Menu View Component";
+            _userManagerRepository = userManagerRepository;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            var categoryTypes = await _userManagerRepository.CategoryType.GetAllAsync();
+            return View(categoryTypes);
         }
     }
 }

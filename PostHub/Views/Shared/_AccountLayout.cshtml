@@ -4,20 +4,181 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewBag.Title</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="/user/css/media_query.css" rel="stylesheet" type="text/css" />
+    <link href="/user/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link href="/user/css/animate.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <link href="/user/css/owl.carousel.css" rel="stylesheet" type="text/css" />
+    <link href="/user/css/owl.theme.default.css" rel="stylesheet" type="text/css" />
+    <!-- Bootstrap CSS -->
+    <link href="/user/css/style_1.css" rel="stylesheet" type="text/css" />
+    <!-- Modernizr JS -->
+    <script src="/user/js/modernizr-3.5.0.min.js"></script>
+
+    <link href="/css/dropdown.css" rel="stylesheet" />
+ @*    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
     <link rel="stylesheet" href="/css/account.css" asp-append-version="true" />
     
 </head>
 <body>
     
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-3 fh5co_padding_menu">
+                    <a asp-action="Index" asp-controller="Home">
+                        <img src="/user/images/logo.png" alt="img" class="fh5co_logo_width" />
+                    </a>
+                </div>
+                <div class="col-12 col-md-9 d-flex justify-content-lg-evenly align-items-center">
+                    <div class="text-center m-5">
+                        <form asp-action="Index" asp-controller="Home" method="get">
+                            <div class="input-group">
+                                <input name="nameSearch" class="form-control bg-light border-0 small" placeholder="Nhập tên bài viết...">
+                                <div class="input-group-append">
+                                    <button type="submit"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    <partial name="_LoginPartial" />
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-faded fh5co_padd_mediya padding_786">
+        <div class="container padding_786">
+            <nav class="navbar navbar-toggleable-md navbar-light ">
+                <button class="navbar-toggler navbar-toggler-right mt-3" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="fa fa-bars"></span>
+                </button>
+                <a class="navbar-brand" href="#"><img src="/user/images/logo.png" alt="img" class="mobile_logo_width" /></a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto" style="color: #f5bc04;">
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-action="Index" asp-controller="Home" asp-area="">Trang chủ</a>
+                        </li>
+
+                        @* <li class="nav-item dropdown" >
+
+                        <a class="dropcap1">Danh mục</a>
+                        <div class="dropdown-content1">
+
+
+                        </div>
+                        </li> *@
+                        <vc:navigation-menu />
+                        <li class="nav-item">
+                            <div class="modal-contact" data-toggle="modal" data-target="#exampleModal">Liên hệ</div>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Liên hệ</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form asp-action="AddContact" asp-controller="Home" method="post">
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label class="form-label">Email:</label>
+                                                    <input class="form-control " name="email" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label">Nội dung liên hệ:</label>
+                                                    <input class="form-control " name="content" />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Thoát</button>
+                                                <button type="submit" class="btn btn-primary">Lưu</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
+    <div class="container-fluid fh5co_footer_bg pb-3">
+        <div class="container animate-box">
+            <div class="row">
+                <div class="col-12 spdp_right py-5"><img src="/user/images/white_logo.png" alt="img" class="footer_logo" /></div>
+                <div class="clearfix"></div>
+                <div class="col-12 col-md-5 col-lg-6">
+                    <div class="footer_main_title py-3"> Thông tin về website</div>
+                    <div class="footer_sub_about pb-3">
+                        PostHub là một nơi mà người dùng có thể xem các bài viết và chia sẻ các bài viết.
+                    </div>
+                </div>
+                <div class="col-12 col-md-5 col-lg-6">
+                    <div class="footer_main_title py-3"> Danh mục</div>
+                    <ul class="footer_menu">
+                        <vc:side-bar />
+                    </ul>
+                </div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+            </div>
+            <div class="row justify-content-center pt-2 pb-4">
+                <div class="col-12 col-md-8 col-lg-7 ">
+                    <form asp-action="AddSubscribe" asp-controller="Home" method="post">
+                        <div class="input-group">
+                            <span class="input-group-addon fh5co_footer_text_box" id="basic-addon1"><i class="fa fa-envelope"></i></span>
+                            <input type="text" name="email" class="form-control fh5co_footer_text_box" placeholder="Enter your email..." aria-describedby="basic-addon1">
+                            <button type="submit"><i class="fa fa-paper-plane-o"></i>&nbsp;&nbsp;Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid fh5co_footer_right_reserved">
+        <div class="container">
+            <div class="row  ">
+                <div class="col-12 col-md-6 py-4 Reserved"> © PostHub 2024</div>
+                <div class="col-12 col-md-6 spdp_right py-4">
+                    <a asp-action="Index" asp-controller="Home" asp-area="" class="footer_last_part_menu">Home</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+@*     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="/user/js/owl.carousel.min.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+            crossorigin="anonymous"></script>
+    <!-- Waypoints -->
+    <script src="/user/js/jquery.waypoints.min.js"></script>
+    <!-- Main -->
+    <script src="/user/js/main.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

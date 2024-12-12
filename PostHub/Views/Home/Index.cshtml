@@ -6,14 +6,16 @@
     ViewBag.Title = "Trang chủ";
 }
 <h4><strong>Trang chủ</strong></h4>
-@if(TempData["MessageAddSubSuccess"] != null){
-    <div id="messageAddSubSuccess" class="bg-success d-flex align-items-center text-white" style="height:50px">
-        @TempData["MessageAddSubSuccess"]
+@if (TempData["MessageSuccess"] != null)
+{
+    <div id="messageSuccess" class="bg-success d-flex align-items-center text-white" style="height:50px">
+        @TempData["MessageSuccess"]
     </div>
 }
-@if(TempData["MessageAddSubError"] != null){
-    <div id="messageAddSubError" class="bg-danger d-flex align-items-center text-white" style="height:50px;" >
-        @TempData["MessageAddSubError"]
+@if (TempData["MessageError"] != null)
+{
+    <div id="messageError" class="bg-danger d-flex align-items-center text-white" style="height:50px;">
+        @TempData["MessageError"]
     </div>
 }
 

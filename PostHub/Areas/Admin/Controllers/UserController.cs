@@ -33,7 +33,7 @@ namespace PostHub.Areas.Admin.Controllers
             var result = await _repository.GetByUserNameAsync(UserName);
             if (result == null)
             {
-                return RedirectToAction("Index","Home","Admin");
+                return RedirectToAction("Index","Home");
             }
             return View(result);
         }

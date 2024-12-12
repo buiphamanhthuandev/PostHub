@@ -69,7 +69,8 @@ namespace PostHub.Controllers
                 };
                 _userManagerRepository.Comment.CreateAsync(result);
                 await _userManagerRepository.SaveAsync();
-                return RedirectToAction("Index");
+                
+                return RedirectToAction("Detail",new {id = postId});
                 //return Json(new { success = true, message = "Thêm bình luận thành công." });
             }
             return RedirectToAction("Index");
@@ -88,12 +89,33 @@ namespace PostHub.Controllers
                 _userManagerRepository.Subscribe.CreateAsync(subscribe);
                 await _userManagerRepository.SaveAsync();
 
-                TempData["MessageAddSubSuccess"] = "Subscribe thành công. Bạn sẽ nhận thông báo về các tin tức nổi bật.";
+                TempData["MessageSuccess"] = "Subscribe thành công. Bạn sẽ nhận thông báo về các tin tức nổi bật.";
                 return RedirectToAction("Index");
             }
-            TempData["MessageAddSubError"] = "Có sự cố khi thêm email!";
+            TempData["MessageError"] = "Có sự cố khi thêm email!, Vui lòng thử lại";
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddContact(string email, string content)
+        {
+            if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(content))
+            {
+
+                var result = new Contact
+                {
+                    Email = email,
+                    Content = content,
+                };
+                _userManagerRepository.Contact.CreateAsync(result);
+                await _userManagerRepository.SaveAsync();
+                TempData["MessageSuccess"] = "Thêm liên hệ thành. Chúng tôi sẽ phản hồi sớm nhất cho bạn.";
+                return RedirectToAction("Index");
+            }
+            TempData["MessageError"] = "Có sự cố thêm liên hệ vui lòng thử lại!.";
+            return RedirectToAction("Index");
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

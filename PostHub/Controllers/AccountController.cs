@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Migrations;
 using PostHub.Models;
+using PostHub.Repositories.ManagerRepository;
 using PostHub.ViewModels;
 
 namespace PostHub.Controllers
@@ -9,11 +11,15 @@ namespace PostHub.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly IUserManagerRepository _userManagerRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, IUserManagerRepository userManagerRepository, IWebHostEnvironment webHostEnvironment)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _userManagerRepository = userManagerRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Login()
@@ -28,25 +34,25 @@ namespace PostHub.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByEmailAsync(model.Email);
-                    if(user == null)
-                    {
-                        return View(model);
-                    }
-                    var roles = await _userManager.GetRolesAsync(user);
-                    if (roles.Contains("admin"))
-                    {
-                        return RedirectToAction("Index", "Home", new { area = "Admin" });
-                    }else if (roles.Contains("user"))
-                    {
-                        return RedirectToAction("Index", "Home", new { area = "" });
-                    }
-                    else
-                    {
-                        return View(model);
-                    }
-                    
-                    
+                    //var user = await _userManager.FindByEmailAsync(model.Email);
+                    //if(user == null)
+                    //{
+                    //    return View(model);
+                    //}
+                    //var roles = await _userManager.GetRolesAsync(user);
+                    //if (roles.Contains("admin"))
+                    //{
+                    //    return RedirectToAction("Index", "Home", new { area = "Admin" });
+                    //}else if (roles.Contains("user"))
+                    //{
+                    //    return RedirectToAction("Index", "Home", new { area = "" });
+                    //}
+                    //else
+                    //{
+                    //    return View(model);
+                    //}
+                    return RedirectToAction("Index", "Home", new { area = "" });
+
                 }
                 else {
                     ModelState.AddModelError("", "Email or Password is incorrect!");
@@ -157,6 +163,75 @@ namespace PostHub.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index","Home");
+        }
+
+        public async Task<IActionResult> EditProfile(string userName)
+        {
+            if (string.IsNullOrEmpty(userName))
+            {
+                return RedirectToAction("Index");
+            }
+            var user = await _userManagerRepository.EditProFile.GetByUserNameAsync(userName);
+            if (user == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(user);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(string userName, string fullName, string phoneNumber, DateOnly dateOfBirth)
+        {
+            if (!string.IsNullOrEmpty(userName)){
+                var user = await _userManagerRepository.EditProFile.GetByUserNameAsync(userName);
+                if (user == null)
+                {
+                    return RedirectToAction("Index");
+                }
+                if (!string.IsNullOrEmpty(fullName))
+                {
+                    user.FullName = fullName;
+                }
+                if (!string.IsNullOrEmpty(phoneNumber))
+                {
+                    user.PhoneNumber = phoneNumber;
+                }
+                
+                if (dateOfBirth != DateOnly.MinValue)
+                {
+                    user.DateOfBirth = dateOfBirth.ToString();
+                }
+                _userManagerRepository.EditProFile.EditProfile(user);
+                await _userManagerRepository.SaveAsync();
+                return View(user);
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProfileImage(string userName, IFormFile image)
+        {
+            if (!string.IsNullOrEmpty(userName))
+            {
+                if(image != null && image.Length > 0)
+                {
+                    var fileImage = Path.GetFileNameWithoutExtension(image.FileName);
+                    var fileExtention = Path.GetExtension(image.FileName);
+
+                    var fileName = $"{fileImage}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}{fileExtention}";
+                    using(var stream = new FileStream(Path.Combine(_webHostEnvironment.WebRootPath, "Images", fileName), FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+                    var user = await _userManagerRepository.EditProFile.GetByUserNameAsync(userName);
+                    if (user != null)
+                    {
+                        user.ProfileImage = fileName;
+                        _userManagerRepository.EditProFile.EditProfile(user);
+                        await _userManagerRepository.SaveAsync();
+                        return RedirectToAction("Index", user);
+                    }
+                }
+            }
+            return RedirectToAction("Index");
         }
     }
 }

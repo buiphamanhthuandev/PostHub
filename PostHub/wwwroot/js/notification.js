@@ -1,16 +1,20 @@
 ﻿window.addEventListener("DOMContentLoaded", function () {
-    var messageAddSubSuccess = document.getElementById("messageAddSubSuccess");
-    var messageAddSubErroe = document.getElementById("messageAddSubError");
+    var messageSuccess = document.getElementById("messageSuccess");
+    var messageError = document.getElementById("messageError");
 
-    if (messageAddSubSuccess) {
+    if (messageSuccess) {
         setTimeout(function () {
-            messageAddSubSuccess.style.display = "none";
+            console.log("Thành công")
+            messageSuccess.style.visibility = "hidden";
         }, 5000);
+        
     }
-    if (messageAddSubErroe) {
+    if (messageError) {
         setTimeout(function () {
-            messageAddSubErroe.style.display = "none";
+            console.log("Thất bại")
+            messageError.style.visibility = "hidden";  
         }, 5000);
+        
     }
 
 });
