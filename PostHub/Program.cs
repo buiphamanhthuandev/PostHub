@@ -4,9 +4,11 @@ using PostHub.Areas.Admin.Repositories.Categories;
 using PostHub.Areas.Admin.Repositories.CategoryTypes;
 using PostHub.Areas.Admin.Repositories.Comments;
 using PostHub.Areas.Admin.Repositories.Contacts;
+using PostHub.Areas.Admin.Repositories.ManagerRepository;
 using PostHub.Areas.Admin.Repositories.Posts;
 using PostHub.Areas.Admin.Repositories.Subscribes;
 using PostHub.Areas.Admin.Repositories.Users;
+using PostHub.Areas.Admin.Services.ManagerService;
 using PostHub.Data;
 using PostHub.Models;
 using PostHub.Repositories.ManagerRepository;
@@ -35,14 +37,8 @@ builder.Services.AddIdentity<User, IdentityRole>(opts =>
 }).AddEntityFrameworkStores<PostHubDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<ICategoryTypeRepository,EFCategoryTypeRepository>();
-builder.Services.AddScoped<ICategoryRepository,EFCategoryRepository>();
-builder.Services.AddScoped<ISubscribeRepository,EFSubscribeRepository>();
-builder.Services.AddScoped<IContactRepository,EFContactRepository>();
-builder.Services.AddScoped<ICommentRepository,EFCommentRepository>();
-builder.Services.AddScoped<IPostRepository,EFPostRepository>();
-builder.Services.AddScoped<IUserRepository,EFUserRepository>();
-
+builder.Services.AddScoped<IManagerRepositoy, ManagerRepository>();
+builder.Services.AddScoped<IManagerService, ManagerService>();
 builder.Services.AddScoped<IUserManagerRepository,UserManagerRepository>();
 
 var app = builder.Build();

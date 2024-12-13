@@ -4,21 +4,32 @@ using PostHub.Models;
 
 namespace PostHub.Areas.Admin.Repositories.Subscribes
 {
-    public class EFSubscribeRepository : ISubscribeRepository
+    public class EFSubscribeRepository : GenericRepo<Subscribe>, ISubscribeRepository
     {
-        private PostHubDbContext _context;
-
-        public EFSubscribeRepository(PostHubDbContext context)
+        public EFSubscribeRepository(PostHubDbContext context):base(context) { }
+        public async Task<List<Subscribe>> GetPageLinkAsync(string nameSearch, int page, int pageSize, bool trackChanges)
         {
-            _context = context;
+            if (!string.IsNullOrEmpty(nameSearch))
+            {
+                return await PageLinkAsync(page, pageSize, trackChanges).Where(s => s.Email.Contains(nameSearch)).ToListAsync();
+            }
+            return await PageLinkAsync(page, pageSize, trackChanges).ToListAsync();
         }
-        public async Task<IEnumerable<Subscribe>> GetAllAsync()
+        public async Task<int> GetCountAsync(string nameSearch, bool trackChanges)
         {
-            return await _context.Subscribes.ToListAsync();
+            if (!string.IsNullOrEmpty(nameSearch))
+            {
+                return await FindAll(trackChanges).Where(s => s.Email.Contains(nameSearch)).CountAsync();
+            }
+            return await FindAll(trackChanges).CountAsync();
         }
-        public async Task<int> GetCount()
+        public void DeleteAsync(Subscribe subscribe)
         {
-            return await _context.Subscribes.CountAsync();
+            Delete(subscribe);
+        }
+        public async Task<Subscribe> GetByIdAsync(int id, bool trackChanges)
+        {
+            return await FindById(item => item.Id == id, trackChanges).FirstOrDefaultAsync();
         }
     }
 }

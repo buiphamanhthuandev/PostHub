@@ -4,45 +4,51 @@ using PostHub.Models;
 
 namespace PostHub.Areas.Admin.Repositories.CategoryTypes
 {
-    public class EFCategoryTypeRepository : ICategoryTypeRepository
+    public class EFCategoryTypeRepository : GenericRepo<CategoryType>, ICategoryTypeRepository
     {
-        private PostHubDbContext _context;
-        public EFCategoryTypeRepository(PostHubDbContext context)
-        {
-            _context = context;
-        }
+        public EFCategoryTypeRepository(PostHubDbContext context):base(context) { }
 
-        public async Task<IEnumerable<CategoryType>> GetAllAsync()
+        public async Task<List<CategoryType>> GetAllAsync(bool trackChanges)
         {
-            return await _context.CategoryTypes.Where(c => c.State == 1).ToListAsync();
+            return await FindAll(trackChanges).Where(c => c.State == 1).ToListAsync();
         }
-        public async Task<CategoryType> GetByIdAsync(int id)
+        public async Task<List<CategoryType>> GetPageLinkAsync(string nameSearch, int page, int pageSize, bool trackChanges)
         {
-            return await _context.CategoryTypes.FirstAsync(c => c.Id == id);
-        }
-
-        public async Task AddAsync(CategoryType categoryType)
-        {
-            _context.CategoryTypes.Add(categoryType);
-            await _context.SaveChangesAsync();
-        }
-        public async Task UpdateAsync(CategoryType categoryType)
-        {
-            _context.CategoryTypes.Update(categoryType);
-            await _context.SaveChangesAsync();
-        }
-        public async Task DeleteByIdAsync(int id)
-        {   
-            var categoryType = await GetByIdAsync(id);
-            if (categoryType != null)
+            if (!string.IsNullOrEmpty(nameSearch))
             {
-                _context.CategoryTypes.Remove(categoryType);
-                await _context.SaveChangesAsync();
+                return await PageLinkAsync(page, pageSize, trackChanges)
+                    .Where(c => c.State == 1 && c.Name.Contains(nameSearch))
+                    .ToListAsync();
             }
+            return await PageLinkAsync(page, pageSize, trackChanges)
+                .Where(c => c.State == 1)
+                .ToListAsync();
         }
-        public async Task<int> GetCount()
+        public async Task<CategoryType> GetByIdAsync(int id, bool trackChanges)
         {
-            return await _context.CategoryTypes.Where(c => c.State == 1).CountAsync();
+            return await FindAll(trackChanges).Where(item => item.Id == id).FirstOrDefaultAsync();
+        }
+
+        public void CreateAsync(CategoryType categoryType)
+        {
+            Create(categoryType);
+        }
+        public void UpdateAsync(CategoryType categoryType)
+        {
+            Update(categoryType);
+        }
+        public void DeleteAsync(CategoryType categoryType)
+        {
+            Delete(categoryType);
+        }
+
+        public async Task<int> GetCountAsync(string nameSearch, bool trackChanges)
+        {
+            if (!string.IsNullOrEmpty(nameSearch))
+            {
+                return await FindAll(trackChanges).Where(item => item.Name.Contains(nameSearch) && item.State == 1).CountAsync();
+            }
+            return await FindAll(trackChanges).Where(c => c.State == 1).CountAsync();
         }
     }
 }

@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Repositories\Role\" />
     <Folder Include="wwwroot\admin\" />
     <Folder Include="wwwroot\user\" />
   </ItemGroup>

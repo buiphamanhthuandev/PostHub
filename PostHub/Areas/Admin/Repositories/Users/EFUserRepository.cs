@@ -4,35 +4,45 @@ using PostHub.Models;
 
 namespace PostHub.Areas.Admin.Repositories.Users
 {
-    public class EFUserRepository : IUserRepository
+    public class EFUserRepository : GenericRepo<User>, IUserRepository
     {
-        private readonly PostHubDbContext _context;
-
-        public EFUserRepository(PostHubDbContext context)
+        public EFUserRepository(PostHubDbContext context) : base(context) { }
+        
+        public async Task<List<User>> GetAllAsync(bool trackChanges)
         {
-            _context = context;
+            return await FindAll(trackChanges).ToListAsync();
         }
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<List<User>> GetPageLinkAsync(string nameSearch, int page, int pageSize, bool trackChanges)
         {
-            return await _context.Users.ToListAsync();
+            if (!string.IsNullOrEmpty(nameSearch))
+            {
+                return await PageLinkAsync(page, pageSize, trackChanges).Where(u => u.FullName.Contains(nameSearch)).ToListAsync();
+            }
+            return await PageLinkAsync(page, pageSize, trackChanges).ToListAsync();
         }
-
-        public async Task<User> GetByIdAsync(string id)
+        public async Task<User> GetByIdAsync(string id, bool trackChanges)
         {
-            return await _context.Users.FirstAsync(u => u.Id == id);
+            return await FindById(item => item.Id == id, trackChanges).FirstOrDefaultAsync();
         }
-        public async Task<User> GetByUserNameAsync(string username)
+        public async Task<User> GetByUserNameAsync(string username, bool trackChanges)
         {
-            return await _context.Users.FirstAsync(u => u.UserName == username);
+            return await FindById(item => item.UserName == username, trackChanges).FirstOrDefaultAsync();
         }
-        public async Task UpdateAsync(User user)
+        public void CreateAsync(User user)
         {
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
+            Create(user);
         }
-        public async Task<int> GetCount()
+        public void UpdateAsync(User user)
         {
-            return await _context.Users.Where(c => c.IsActive == 1).CountAsync();
+            Update(user);
+        }
+        public async Task<int> GetCountAsync(string nameSearch, bool trackChanges)
+        {
+            if (!string.IsNullOrEmpty(nameSearch))
+            {
+                return await FindAll(trackChanges).Where(u => u.FullName.Contains(nameSearch)).CountAsync();
+            }
+            return await FindAll(trackChanges).CountAsync();
         }
     }
 }

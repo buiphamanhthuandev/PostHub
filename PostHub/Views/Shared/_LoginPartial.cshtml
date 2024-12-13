@@ -15,7 +15,7 @@
         @if (isAdmin)
         {
             <div class="m-2">
-                <a asp-action="Index" asp-controller="Home" asp-area="Admin">Trang quản trị</a>
+                <a asp-action="Index" asp-controller="CategoryType" asp-area="Admin">Trang quản trị</a>
             </div>
         }
         <a asp-action="EditProfile" asp-controller="Account" asp-area="" asp-route-userName="@userManager.GetUserName(User)" class="d-flex justify-content-between align-items-center">

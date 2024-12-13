@@ -1,10 +1,19 @@
-﻿@model CategoryViewModel
+﻿@model CategoryFormViewModel
 @{
     ViewBag.Title = "Create Category";
 }
+@section Scripts {
+    <script src="/js/notification.js"></script>
+}
+@if (TempData["MessageError"] != null)
+{
+    <div id="messageError" class="bg-danger d-flex align-items-center text-white" style="height:50px;">
+        @TempData["MessageError"]
+    </div>
+}
 <h1><a asp-action="Index" class="text-decoration-none text-dark btn btn-primary">View All Category</a></h1>
 <form method="post" asp-action="Create" asp-controller="Category" asp-area="Admin">
-    <div asp-validation-summary="ModelOnly"></div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3 form-group">
         <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" />

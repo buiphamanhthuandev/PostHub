@@ -4,44 +4,37 @@ using PostHub.Models;
 
 namespace PostHub.Areas.Admin.Repositories.Contacts
 {
-    public class EFContactRepository : IContactRepository
+    public class EFContactRepository : GenericRepo<Contact>, IContactRepository
     {
-        private PostHubDbContext _context;
 
-        public EFContactRepository(PostHubDbContext context)
+        public EFContactRepository(PostHubDbContext context):base(context) { }
+        public async Task<List<Contact>> GetPageLinkAsync(string nameSearch, int page, int pageSize, bool trackChanges)
         {
-            _context = context;
-        }
-        public async Task<IEnumerable<Contact>> GetAllAsync()
-        {
-            return await _context.Contacts.ToListAsync();
-        }
-        public async Task<Contact> GetByIdAsync(int id)
-        {
-            return await _context.Contacts.FirstAsync(c => c.Id == id);
-        }
-        public async Task AddAsync(Contact contact)
-        {
-            _context.Contacts.Add(contact);
-            await _context.SaveChangesAsync();
-        }
-        public async Task UpdateAsync(Contact contact)
-        {
-            _context.Contacts.Update(contact);
-            await _context.SaveChangesAsync();
-        }
-        public async Task DeleteAsync(int id)
-        {
-            var result = await GetByIdAsync(id);
-            if(result != null)
+            if (!string.IsNullOrEmpty(nameSearch))
             {
-                _context.Contacts.Remove(result);
-                await _context.SaveChangesAsync();
+                return await PageLinkAsync(page, pageSize, trackChanges).Where(c => c.Content.Contains(nameSearch)).ToListAsync();
             }
+            return await PageLinkAsync(page, pageSize, trackChanges).ToListAsync();
         }
-        public async Task<int> GetCount()
+        public async Task<Contact> GetByIdAsync(int id, bool trackChanges)
         {
-            return await _context.Contacts.CountAsync();
+            return await FindById(item => item.Id == id,trackChanges).FirstOrDefaultAsync();
+        }
+        public void UpdateAsync(Contact contact)
+        {
+            Update(contact);
+        }
+        public void DeleteAsync(Contact contact)
+        {
+            Delete(contact);
+        }
+        public async Task<int> GetCountAsync(string nameSearch, bool trackChanges)
+        {
+            if (!string.IsNullOrEmpty(nameSearch))
+            {
+                return await FindAll(trackChanges).Where(c => c.Content.Contains(nameSearch)).CountAsync();
+            }
+            return await FindAll(trackChanges).CountAsync();
         }
     }
 }

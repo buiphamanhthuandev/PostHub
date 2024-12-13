@@ -1,6 +1,15 @@
-﻿@model CategoryViewModel
+﻿@model CategoryFormViewModel
 @{
     ViewBag.Title = "Edit Category";
+}
+@section Scripts {
+    <script src="/js/notification.js"></script>
+}
+@if (TempData["MessageError"] != null)
+{
+    <div id="messageError" class="bg-danger d-flex align-items-center text-white" style="height:50px;">
+        @TempData["MessageError"]
+    </div>
 }
 <h1><a asp-action="Index" class="text-decoration-none text-dark btn btn-primary">View All Category</a></h1>
 <form method="post" asp-action="Edit" asp-controller="Category" asp-area="Admin">
@@ -11,9 +20,9 @@
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3 form-group">
-        <label class="form-label">@Html.DisplayNameFor(c => c.CategoryTypeId)</label>
+        <label class="form-label">CategoryType</label>
         <select asp-for="CategoryTypeId" class="form-control" asp-items="@ViewBag.CategoryTypes"></select>
-        <span asp-validation-for="Name" class="text-danger"></span>
+        <span asp-validation-for="CategoryTypeId" class="text-danger"></span>
     </div>
     <div class="mb-3 form-group">
         <input type="submit" class="btn btn-primary" value="Edit" />

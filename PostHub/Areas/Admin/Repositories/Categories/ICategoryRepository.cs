@@ -4,12 +4,13 @@ namespace PostHub.Areas.Admin.Repositories.Categories
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<Category>> GetAllAsync();
-        Task<Category> GetByIdAsync(int id);
-        Task AddAsync(Category category);
-        Task UpdateAsync(Category category);
-        Task DeleteAsync(int id);
+        Task<List<Category>> GetAllAsync(bool trackChanges);
+        Task<List<Category>> GetPageLinkAsync(string nameSearch, int page, int pageSize, bool trackChanges);
+        Task<Category> GetByIdAsync(int id, bool trackChanges);
+        void CreateAsync(Category category);
+        void UpdateAsync(Category category);
+        void DeleteAsync(Category category);
 
-        Task<int> GetCount();
+        Task<int> GetCountAsync(string nameSearch, bool trackChanges);
     }
 }

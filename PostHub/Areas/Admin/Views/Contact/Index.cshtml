@@ -1,60 +1,82 @@
-﻿@model IEnumerable<Contact>
+﻿@model ContactViewModel
 @{
     ViewBag.Title = "Index Contact";
+}
+@section Scripts {
+    <script src="/js/notification.js"></script>
+}
+@if (TempData["MessageSuccess"] != null)
+{
+    <div id="messageSuccess" class="bg-success d-flex align-items-center text-white" style="height:50px">
+        @TempData["MessageSuccess"]
+    </div>
+}
+@if (TempData["MessageError"] != null)
+{
+    <div id="messageError" class="bg-danger d-flex align-items-center text-white" style="height:50px;">
+        @TempData["MessageError"]
+    </div>
 }
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">List Contact</h6>
+        <h6 class="m-0 font-weight-bold text-primary"><a asp-action="Index" asp-controller="Contact" asp-area="Admin">Danh sách liên hệ</a></h6>
+        <div class="float-right">
+            <form asp-action="Index" asp-controller="Contact" asp-area="Admin" method="get">
+                <div class="input-group">
+                    <input name="nameSearch" class="form-control" placeholder="Tìm kiếm theo tên ..." />
+                    <input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
+        <table class="table table-bordered" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Content</th>
+                    <th>CreateAt</th>
+                    <th>Update State</th>
+                    <th>Del</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Content</th>
+                    <th>CreateAt</th>
+                    <th>Update State</th>
+                    <th>Del</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                @foreach (var c in Model.Contacts ?? Enumerable.Empty<Contact>())
+                {
                     <tr>
-                        <th>Id</th>
-                        <th>Email</th>
-                        <th>Content</th>
-                        <th>CreateAt</th>
-                        <th>Update State</th>
-                        <th>Del</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>Id</th>
-                        <th>Email</th>
-                        <th>Content</th>
-                        <th>CreateAt</th>
-                        <th>Update State</th>
-                        <th>Del</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    @foreach (var c in Model ?? Enumerable.Empty<Contact>())
-                    {
-                        <tr>
-                            <td>@c.Id</td>
-                            <td>@c.Email</td>
-                            <td>@c.Content</td>
-                            <td>@c.CreatedAt</td>
-                            <td>
-                                <form asp-action="Edit" asp-controller="Contact" asp-area="Admin" method="post">
-                                    <input type="hidden" name="id" value="@c.Id"/>
-                                    <button type="submit" class="btn @(c.StateRes == 1 ? "btn-warning" : "btn-success")">@(c.StateRes == 1 ? "status not updated" : "status updated")</button>
-                                </form>
-                            </td>
-                            <td>
-                                <form asp-action="Delete" asp-controller="Contact" asp-area="Admin" method="post">
-                                    <input type="hidden" name="id" value="@c.Id" />
-                                    <input type="submit" name="del" value="Del" class="btn btn-danger" />
-                                </form>
-                            </td>
+                        <td>@c.Id</td>
+                        <td>@c.Email</td>
+                        <td>@c.Content</td>
+                        <td>@c.CreatedAt</td>
+                        <td>
+                            <form asp-action="Edit" asp-controller="Contact" asp-area="Admin" method="post">
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <button type="submit" class="btn @(c.StateRes == 1 ? "btn-warning" : "btn-success")">@(c.StateRes == 1 ? "status not updated" : "status updated")</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form asp-action="Delete" asp-controller="Contact" asp-area="Admin" method="post">
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <input type="submit" name="del" value="Del" class="btn btn-danger" />
+                            </form>
+                        </td>
 
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div page-model="@Model.PagingInfo" page-action="Index" page-class="btn" page-url-nameSearch="@Model.NameSearch" page-classes-enable="true" page-class-normal="btn-outline-dark" page-class-selected="btn-primary" class="btn-group m-1 text-black"></div>
     </div>
 </div>

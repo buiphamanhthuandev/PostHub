@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PostHub.Areas.Admin.Repositories.Contacts;
+using PostHub.Areas.Admin.Services.ManagerService;
 using PostHub.Areas.Admin.ViewModels;
 using PostHub.Data;
 using PostHub.Models;
@@ -18,31 +19,33 @@ namespace PostHub.Areas.Admin.Controllers
     [Authorize(Roles ="admin")]
     public class ContactController : Controller
     {
-        
-        private readonly IContactRepository _repository;
 
-        public ContactController(IContactRepository repository)
+        private readonly IManagerService _managerService;
+
+        public ContactController(IManagerService managerService)
         {
-            _repository = repository;
+            _managerService = managerService;
         }
 
 
         // GET: Admin/Contact
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string nameSearch, int page = 1, int pageSize = 10)
         {
-            return View(await _repository.GetAllAsync());
+            var result = await _managerService.Contact.GetPageLinkAsync(nameSearch, page, pageSize, trackChanges: false);
+            return View(result);
         }
 
         // POST: Admin/Contact/Edit/5
         [HttpPost]
         public async Task<IActionResult> Edit(int id)
         {
-            var contact = await _repository.GetByIdAsync(id);
-            if (contact != null)
+            var result = await _managerService.Contact.EditStateAsync(id, trackChanges: true);
+            if (result)
             {
-                contact.StateRes = contact.StateRes == 1 ? 0 : 1;
-                await _repository.UpdateAsync(contact);
+                TempData["MessageSuccess"] = $"Chỉnh sửa trạng thái liên hệ: {id} thành công.";
+                return RedirectToAction("Index");
             }
+            TempData["MessageError"] = $"Chỉnh sửa trạng thái liên hệ: {id} không thành công!";
             return RedirectToAction("Index");
         }
 
@@ -50,14 +53,16 @@ namespace PostHub.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var contact = await _repository.GetByIdAsync(id);
-            if (contact != null)
+            var result = await _managerService.Contact.DeleteAsync(id, trackChanges: false);
+            if (result)
             {
-                await _repository.DeleteAsync(id);
+                TempData["MessageSuccess"] = $"Xóa liên hệ: {id} thành công.";
+                return RedirectToAction("Index");
             }
+            TempData["MessageError"] = $"Xóa liên hệ: {id} không thành công!";
             return RedirectToAction("Index");
         }
 
-        
+
     }
 }

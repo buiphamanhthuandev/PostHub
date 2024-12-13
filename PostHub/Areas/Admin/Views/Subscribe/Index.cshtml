@@ -1,0 +1,68 @@
+﻿@model SubscribeViewModel
+@{
+    ViewBag.Title = "Index Subscribe";
+}
+@section Scripts {
+    <script src="/js/notification.js"></script>
+}
+@if (TempData["MessageSuccess"] != null)
+{
+    <div id="messageSuccess" class="bg-success d-flex align-items-center text-white" style="height:50px">
+        @TempData["MessageSuccess"]
+    </div>
+}
+@if (TempData["MessageError"] != null)
+{
+    <div id="messageError" class="bg-danger d-flex align-items-center text-white" style="height:50px;">
+        @TempData["MessageError"]
+    </div>
+}
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary"><a asp-action="Index" asp-controller="Category" asp-area="Admin">Danh sách đăng ký</a></h6>
+        <div class="float-right">
+            <form asp-action="Index" asp-controller="Subscribe" asp-area="Admin" method="get">
+                <div class="input-group">
+                    <input name="nameSearch" class="form-control" placeholder="Tìm kiếm theo email..." />
+                    <input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Del</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Del</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                @foreach (var c in Model.Subscribes ?? Enumerable.Empty<Subscribe>())
+                {
+                    <tr>
+                        <td>@c.Id</td>
+                        <td>@c.Email</td>
+                        <td>
+                            <form asp-action="Delete" asp-controller="Subscribe" asp-area="Admin" method="post">
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <input type="submit" name="del" value="Del" class="btn btn-danger" />
+                            </form>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div page-model="@Model.PagingInfo" page-action="Index" page-class="btn" page-url-nameSearch="@Model.NameSearch" page-classes-enable="true" page-class-normal="btn-outline-dark" page-class-selected="btn-primary" class="btn-group m-1 text-black"></div>
+    </div>
+</div>

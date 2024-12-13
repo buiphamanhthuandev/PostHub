@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PostHub.Areas.Admin.Repositories.Categories;
 using PostHub.Areas.Admin.Repositories.CategoryTypes;
+using PostHub.Areas.Admin.Services.ManagerService;
 using PostHub.Areas.Admin.ViewModels;
+using PostHub.Areas.Admin.ViewModels.CategoryViewModels;
 using PostHub.Data;
 using PostHub.Models;
 
@@ -18,94 +20,92 @@ namespace PostHub.Areas.Admin.Controllers
     [Authorize(Roles = "admin")]
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _repository;
-        private readonly ICategoryTypeRepository _categoryTypeRepository;
+        private readonly IManagerService _managerService;
 
-        public CategoryController(ICategoryRepository repository, ICategoryTypeRepository categoryTypeRepository)
+        public CategoryController(IManagerService managerService)
         {
-            _repository = repository;
-            _categoryTypeRepository = categoryTypeRepository;
+            _managerService = managerService;
         }
 
 
         // GET: Admin/Category
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string nameSearch, int page = 1, int pageSize = 10)
         {
-            return View(await _repository.GetAllAsync());
+            var result = await _managerService.Category.GetPageLinkAsync(nameSearch, page, pageSize, trackChanges: false);
+            return View(result);
         }
 
         // GET: Admin/Category/Create
         public async Task<IActionResult> Create()
         {
-            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.CategoryTypes = new SelectList(await _managerService.CategoryType.GetAllAsync(trackChanges: false), "Id", "Name");
             return View();
         }
 
         // POST: Admin/Category/Create
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryViewModel model)
+        public async Task<IActionResult> Create(CategoryFormViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var category = new Category
+                var result = await _managerService.Category.CreateAsync(model);
+                if (result)
                 {
-                    Name = model.Name,
-                    CategoryTypeId = model.CategoryTypeId,
-                };
-                await _repository.AddAsync(category);
-                return RedirectToAction("Index");
+                    TempData["MessageSuccess"] = $"Thêm danh mục: {model.Name} thành công.";
+                    return RedirectToAction("Index");
+                }
+                TempData["MessageError"] = $"Thêm danh mục: {model.Name} không thành công!";
+                ViewBag.CategoryTypes = new SelectList(await _managerService.CategoryType.GetAllAsync(trackChanges: false), "Id", "Name");
+                return View(model);
             }
-            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync(), "Id", "Name");
+            TempData["MessageError"] = $"Thêm danh mục: {model.Name} không thành công!";
+            ViewBag.CategoryTypes = new SelectList(await _managerService.CategoryType.GetAllAsync(trackChanges: false), "Id", "Name");
             return View(model);
         }
 
         // GET: Admin/Category/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            
-            var result = await _repository.GetByIdAsync(id);
-            if (result == null)
+
+            var result = await _managerService.Category.EditAsync(id, trackChanges: true);
+            if(result == null)
             {
                 return RedirectToAction("Index");
             }
-            var category = new CategoryViewModel
-            {
-                Name = result.Name,
-                CategoryTypeId = result.CategoryTypeId
-            };
-            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync(), "Id", "Name");
-            return View(category);
+            ViewBag.CategoryTypes = new SelectList(await _managerService.CategoryType.GetAllAsync(trackChanges: false), "Id", "Name");
+            return View(result);
         }
 
         // POST: Admin/Category/Edit/5
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, CategoryViewModel model)
+        public async Task<IActionResult> Edit(int id, CategoryFormViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var category = await _repository.GetByIdAsync(id);
-                if (category == null)
+                var result = await _managerService.Category.UpdateAsync(id, model, trackChanges: true);
+                if (result)
                 {
-                    return View(model);
+                    TempData["MessageSuccess"] = $"Chỉnh sửa danh mục: {model.Name} thành công.";
+                    return RedirectToAction("Index");
                 }
-                category.Name = model.Name;
-                category.CategoryTypeId = model.CategoryTypeId;
-                await _repository.UpdateAsync(category);
-                return RedirectToAction("Index");
+                TempData["MessageError"] = $"Chỉnh sửa danh mục: {model.Name} không thành công!";
+                ViewBag.CategoryTypes = new SelectList(await _managerService.CategoryType.GetAllAsync(trackChanges: false), "Id", "Name");
+                return View(model);
             }
-            ViewBag.CategoryTypes = new SelectList(await _categoryTypeRepository.GetAllAsync(), "Id", "Name");
+            TempData["MessageError"] = $"Chỉnh sửa danh mục: {model.Name} không thành công!";
+            ViewBag.CategoryTypes = new SelectList(await _managerService.CategoryType.GetAllAsync(trackChanges: false), "Id", "Name");
             return View(model);
         }
         [HttpPost]
-        // GET: Admin/Category/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _repository.GetByIdAsync(id);
-            if (category != null)
+            var result = await _managerService.Category.DeleteAsync(id, trackChanges: false);
+            if (result)
             {
-                category.State = 0;
-                await _repository.UpdateAsync(category);
+                TempData["MessageSuccess"] = $"Xóa danh mục: {id} thành công.";
+                return RedirectToAction("Index");
             }
+            TempData["MessageError"] = $"Xóa danh muc: {id} không thành công!";
             return RedirectToAction("Index");
         }
     }

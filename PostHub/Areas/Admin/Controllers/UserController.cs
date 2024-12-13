@@ -2,72 +2,74 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PostHub.Areas.Admin.Repositories.Users;
+using PostHub.Areas.Admin.Services.ManagerService;
 using PostHub.Models;
 
 namespace PostHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles ="admin")]
+    [Authorize(Roles = "admin")]
     public class UserController : Controller
     {
-        private readonly IUserRepository _repository;
+        private readonly IManagerService _managerService;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private UserManager<User> _userManager;
-        public UserController(IUserRepository repository, IWebHostEnvironment webHostEnvironment, UserManager<User> userManager)
+
+        public UserController(IManagerService managerService, IWebHostEnvironment webHostEnvironment, UserManager<User> userManager)
         {
-            _repository = repository;
+            _managerService = managerService;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string nameSearch, int page = 1, int pageSize = 10)
         {
-            return View(await _repository.GetAllAsync());
+            var result = await _managerService.User.GetPageLinkAsync(nameSearch, page, pageSize, trackChanges: false);
+            return View(result);
         }
-        public async Task<IActionResult> Edit(string UserName)
-        {   
-            if(string.IsNullOrEmpty(UserName))
+        public async Task<IActionResult> Edit(string userName)
+        {
+            var result = await _managerService.User.EditProfileAsync(userName, trackChanges: true);
+            if(result == null)
             {
                 return RedirectToAction("Index", "Home");
-            }
-            var result = await _repository.GetByUserNameAsync(UserName);
-            if (result == null)
-            {
-                return RedirectToAction("Index","Home");
             }
             return View(result);
         }
         [HttpPost]
-        public async Task<IActionResult> EditProfileImage(string id, IFormFile image)
+        public async Task<IActionResult> EditProfile(string id, string fullName, string phoneNumber, DateOnly dateOfBirth)
         {
-            var result = await _repository.GetByIdAsync(id);
-            if (result != null)
+            var result = await _managerService.User.UpdateProfileAsync(id, fullName, phoneNumber, dateOfBirth, trackChanges: true);
+            if (result)
             {
-                if (image != null && image.Length > 0)
-                {
-                    var fileImage = Path.GetFileNameWithoutExtension(image.FileName);
-                    var fileExtension = Path.GetExtension(image.FileName);
-                    var fileName = $"{fileImage}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}{fileExtension}";
-                    using (var stream = new FileStream(Path.Combine(_webHostEnvironment.WebRootPath, "Images", fileName), FileMode.Create))
-                    {
-                        await image.CopyToAsync(stream);
-                    }
-                    result.ProfileImage = fileName;
-                }
-                await _repository.UpdateAsync(result);
-                return RedirectToAction("Index", "Home", new { area = "Admin" });
+                TempData["MessageSuccess"] = $"Chỉnh sửa thông tin tài khoản thành công.";
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index", "Home", new { area = "Admin" });
+            TempData["MessageError"] = $"Chỉnh sửa thông tin tài khoản không thành công!";
+            return RedirectToAction("Index");
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> EditProfileImage(string id, IFormFile image)
         {
-            var user = await _repository.GetByIdAsync(id);
-            if (user != null)
+            var result = await _managerService.User.UpdateProfileImageAsync(id, image, trackChanges: true);
+            if (result)
             {
-                user.IsActive = user.IsActive == 1 ? 0 : 1;
-                await _repository.UpdateAsync(user);
+                TempData["MessageSuccess"] = $"Chỉnh sửa hinh ảnh tài khoản thành công.";
+                return RedirectToAction("Index");
             }
+            TempData["MessageError"] = $"Chỉnh sửa hình ảnh tài khoản không thành công!";
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateIsActive(string id)
+        {
+            var result = await _managerService.User.UpdateIsActive(id, trackChanges: true);
+            if (result)
+            {
+                TempData["MessageSuccess"] = $"Khóa tài khoản thành công.";
+                return RedirectToAction("Index");
+            }
+            TempData["MessageError"] = $"Khóa tài khoản không thành công!";
             return RedirectToAction("Index");
         }
     }
