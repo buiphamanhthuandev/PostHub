@@ -1,14 +1,12 @@
-﻿using Microsoft.Build.ObjectModelRemoting;
-using PostHub.Models;
+﻿using PostHub.Models;
 using PostHub.TagHelpers;
 
-namespace PostHub.ViewModels
+namespace PostHub.Areas.Admin.ViewModels.PostViewModels
 {
-    public class HomeViewModel
+    public class PostViewModel
     {
         public IEnumerable<Post> Posts { get; set; }
         public string NameSearch { get; set; }
         public PagingInfo PagingInfo { get; set; }
-        public int CurrentCategory { get; set; }
     }
 }

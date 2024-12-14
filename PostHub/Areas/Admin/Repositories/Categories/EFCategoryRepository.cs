@@ -10,7 +10,7 @@ namespace PostHub.Areas.Admin.Repositories.Categories
         public EFCategoryRepository(PostHubDbContext context):base(context) { }
         public async Task<List<Category>> GetAllAsync(bool trackChanges)
         {
-            return await FindAll(trackChanges).ToListAsync();
+            return await FindAll(trackChanges).Where(c => c.State == 1).ToListAsync();
         }
         public async Task<List<Category>> GetPageLinkAsync(string nameSearch, int page, int pageSize, bool trackChanges)
         {

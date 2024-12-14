@@ -4,45 +4,46 @@ using PostHub.Models;
 
 namespace PostHub.Areas.Admin.Repositories.Posts
 {
-    public class EFPostRepository : IPostRepository
+    public class EFPostRepository : GenericRepo<Post>,IPostRepository
     {
-        private PostHubDbContext _context;
+        public EFPostRepository(PostHubDbContext context):base(context) { } 
 
-        public EFPostRepository(PostHubDbContext context)
+        public async Task<List<Post>> GetAllAsync(bool trackChanges)
         {
-            _context = context;
+            return await FindAll(trackChanges).Where(p => p.State == 1).ToListAsync();
         }
-        public async Task<IEnumerable<Post>> GetAllAsync()
+        public async Task<List<Post>> GetPageLinkAsync(string nameSearch, int page, int pageSize, bool trackChanges)
         {
-            return await _context.Posts.Include(p => p.Category).Where(p => p.State == 1).ToListAsync();
-        }
-        public async Task<Post> GetByIdAsync(int id)
-        {
-            return await _context.Posts.FirstAsync(c => c.Id == id);
-        }
-
-        public async Task AddAsync(Post post)
-        {
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
-        }
-        public async Task UpdateAsync(Post post)
-        {
-            _context.Posts.Update(post);
-            await _context.SaveChangesAsync();
-        }
-        public async Task DeleteAsync(int id)
-        {
-            var post = await GetByIdAsync(id);
-            if (post != null)
+            if (!string.IsNullOrEmpty(nameSearch))
             {
-                _context.Posts.Remove(post);
-                await _context.SaveChangesAsync();
+                return await PageLinkAsync(page, pageSize, trackChanges).Where(p => p.Title.Contains(nameSearch)).Include(c => c.Category).ToListAsync();
             }
+            return await PageLinkAsync(page, pageSize, trackChanges).Include(c => c.Category).ToListAsync();
         }
-        public async Task<int> GetCount()
+        public async Task<Post> GetByIdAsync(int id, bool trackChanges)
         {
-            return await _context.Posts.Where(c => c.State == 1).CountAsync();
+            return await FindById(item => item.Id == id, trackChanges).Include(c => c.Category).FirstOrDefaultAsync();
+        }
+
+        public void CreateAsync(Post post)
+        {
+            Create(post);
+        }
+        public void UpdateAsync(Post post)
+        {
+            Update(post);
+        }
+        public void DeleteAsync(Post post)
+        {
+            Delete(post);
+        }
+        public async Task<int> GetCountAsync(string nameSearch, bool trackChange)
+        {
+            if (!string.IsNullOrEmpty(nameSearch))
+            {
+                return await FindAll(trackChange).Where(p => p.Title.Contains(nameSearch)).CountAsync();
+            }
+            return await FindAll(trackChange).CountAsync();
         }
     }
 }

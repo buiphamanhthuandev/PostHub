@@ -1,4 +1,4 @@
-﻿@model PostViewModel
+﻿@model PostFormViewModel
 @{
     ViewBag.Title = "Edit Post";
 }
@@ -12,7 +12,7 @@
     </div>
     <div class="mb-3 form-group">
         <label asp-for="Content" class="form-label"></label>
-        <input asp-for="Content" class="form-control" />
+        <textarea id="Content" asp-for="Content" rows="10" class="form-control"></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
     <div class="mb-3 form-group">
@@ -28,3 +28,11 @@
         <input type="submit" class="btn btn-primary" value="Edit" />
     </div>
 </form>
+<script>
+    CKEDITOR.replace('Content', {
+        entities: false,
+        entities_greek: false,
+        entities_latin: false
+    });
+
+</script>

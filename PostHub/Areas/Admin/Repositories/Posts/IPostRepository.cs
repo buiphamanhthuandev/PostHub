@@ -4,11 +4,12 @@ namespace PostHub.Areas.Admin.Repositories.Posts
 {
     public interface IPostRepository
     {
-        Task<IEnumerable<Post>> GetAllAsync();
-        Task<Post> GetByIdAsync(int id);
-        Task AddAsync(Post post);
-        Task UpdateAsync(Post post);
-        Task DeleteAsync(int id);
-        Task<int> GetCount();
+        Task<List<Post>> GetAllAsync(bool trackChanges);
+        Task<List<Post>> GetPageLinkAsync(string nameSearch, int page, int pageSize, bool trackChanges);
+        Task<Post> GetByIdAsync(int id, bool trackChanges);
+        void CreateAsync(Post post);
+        void UpdateAsync(Post post);
+        void DeleteAsync(Post post);
+        Task<int> GetCountAsync(string nameSearch, bool trackChange);
     }
 }

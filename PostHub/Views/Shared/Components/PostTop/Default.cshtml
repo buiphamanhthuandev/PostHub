@@ -1,14 +1,16 @@
 ﻿@model IEnumerable<Post>
-@foreach (var postTops in Model ?? Enumerable.Empty<Post>())
-{
-    <div class="card col-12">
-        <a class="text-decoration-none" style="color:black;" asp-action="Detail" asp-controller="Home" asp-route-id="@postTops.Id">
-            <img class="card-img-top " style="width:290px; height:160px" src="/Images/@postTops.Image" alt="@postTops.Image">
-            <div class="card-body">
-                <h5 class="card-title">@postTops.Title</h5>
-                <p class="card-text">Lượt xem: @postTops.View</p>
-                <p class="card-text">@postTops.Content.Substring(0, 75)...</p>
-            </div>
-        </a>
-    </div>
-}
+<div class="row">
+    @foreach (var postTops in Model ?? Enumerable.Empty<Post>())
+    {
+        <div class="card col-12">
+            <a class="text-decoration-none" style="color:black;" asp-action="Detail" asp-controller="Home" asp-route-id="@postTops.Id">
+                <img class="card-img-top " style="width:290px; height:160px" src="/Images/@postTops.Image" alt="@postTops.Image">
+                <div class="card-body">
+                    <h5 class="card-title">@postTops.Title</h5>
+                    <p class="card-text">Lượt xem: @postTops.View</p>
+                    <p class="card-text" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">@Html.Raw(postTops.Content)</p>
+                </div>
+            </a>
+        </div>
+    }
+</div>

@@ -21,18 +21,18 @@ namespace PostHub.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(string nameSearch, int postId, int Page = 1, int PageSize = 10) {
+        public async Task<IActionResult> Index(string nameSearch, int postId, int page = 1, int pageSize = 10) {
             var postCounts = await _userManagerRepository.Post.GetCountAsync(nameSearch, postId);
-            var pagePosts = await _userManagerRepository.Post.GetPageLinkAsync(nameSearch, postId, Page, PageSize);
+            var pagePosts = await _userManagerRepository.Post.GetPageLinkAsync(nameSearch, postId, page, pageSize);
             var result = new HomeViewModel
             {
                 Posts = pagePosts,
-                
+                NameSearch = nameSearch,
                 PagingInfo = new PagingInfo
                 {
                     TotalItems = postCounts,
-                    ItemsPerPage = PageSize,
-                    CurrentPage = Page
+                    ItemsPerPage = pageSize,
+                    CurrentPage = page,
                 },
                 CurrentCategory = postId
             };

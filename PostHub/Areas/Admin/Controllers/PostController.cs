@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using PostHub.Areas.Admin.Instructures;
 using PostHub.Areas.Admin.Repositories.Categories;
 using PostHub.Areas.Admin.Repositories.Posts;
+using PostHub.Areas.Admin.Services.ManagerService;
 using PostHub.Areas.Admin.ViewModels;
+using PostHub.Areas.Admin.ViewModels.PostViewModels;
 using PostHub.Data;
 using PostHub.Models;
 
@@ -19,134 +21,110 @@ namespace PostHub.Areas.Admin.Controllers
     [Authorize(Roles ="admin")]
     public class PostController : Controller
     {
-        private readonly IPostRepository _repository;
-        private readonly ICategoryRepository _categoryRepository;
-        private IWebHostEnvironment _webHostEnvironment;
+        private readonly IManagerService _managerService;
 
-        public PostController(IPostRepository repository, ICategoryRepository categoryRepository, IWebHostEnvironment webHostEnvironment)
+        public PostController(IManagerService managerService)
         {
-            _repository = repository;
-            _categoryRepository = categoryRepository;
-            _webHostEnvironment = webHostEnvironment;
+            _managerService = managerService;
         }
 
-        //// GET: Admin/Post
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await _repository.GetAllAsync());
-        //}
+        // GET: Admin/Post
+        public async Task<IActionResult> Index(string nameSearch, int page = 1, int pageSize = 10)
+        {
+            var result = await _managerService.Post.GetPageLinkAsync(nameSearch, page, pageSize, trackChanges: false);
+            return View(result);
+        }
 
-        //// GET: Admin/Post/Create
-        //public async Task<IActionResult> Create()
-        //{
-        //    //ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-        //    return View();
-        //}
+        // GET: Admin/Post/Create
+        public async Task<IActionResult> Create()
+        {
+            ViewBag.Categories = new SelectList(await _managerService.Category.GetAllAsync(trackChanges: false), "Id", "Name");
+            return View();
+        }
 
-        //// POST: Admin/Post/Create
-        //[HttpPost]
-        //public async Task<IActionResult> Create(PostViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        string fileName = string.Empty;
-        //        if(model.Image != null && model.Image.Length > 0)
-        //        {
-        //            var fileImage = Path.GetFileNameWithoutExtension(model.Image.FileName);
-        //            var fileExtension = Path.GetExtension(model.Image.FileName);
-        //            fileName = $"{fileImage}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}{fileExtension}";
-        //            using(var stream = new FileStream(Path.Combine(_webHostEnvironment.WebRootPath, "Images", fileName), FileMode.Create))
-        //            {
-        //                await model.Image.CopyToAsync(stream);
-        //            }
-        //        }
-        //        var post = new Post
-        //        {
-        //            Title = model.Title,
-        //            Content = model.Content,
-        //            CategoryId = model.CategoryId,
-        //            Image = fileName,
-        //            Slug = SlugHelper.GenerateSlug(model.Title),
-        //        };
-        //        await _repository.AddAsync(post);
-        //        return RedirectToAction("Index");
-        //    }
-        //    //ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-        //    return View(model);
-        //}
+        // POST: Admin/Post/Create
+        [HttpPost]
+        public async Task<IActionResult> Create(PostFormViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _managerService.Post.CreateAsync(model);
+                if (result)
+                {
+                    TempData["MessageSuccess"] = $"Thêm bài viết: {model.Title} thành công.";
+                    return RedirectToAction("Index");
+                }
+                TempData["MessageError"] = $"Thêm bài viết: {model.Title} không thành công!";
+                ViewBag.Categories = new SelectList(await _managerService.Category.GetAllAsync(trackChanges: false), "Id", "Name");
+                return View(model);
+            }
+            TempData["MessageError"] = $"Thêm bài viết: {model.Title} không thành công!";
+            ViewBag.Categories = new SelectList(await _managerService.Category.GetAllAsync(trackChanges: false), "Id", "Name");
+            return View(model);
+        }
 
-        //// GET: Admin/Post/Edit/5
-        //public async Task<IActionResult> Edit(int id)
-        //{
-        //    var result = await _repository.GetByIdAsync(id);
-        //    if(result == null)
-        //    {
-        //        return RedirectToAction("Index");
-        //    }
-        //    var post = new PostViewModel
-        //    {
-        //        Title = result.Title,
-        //        Content = result.Content,
-        //        CategoryId = result.CategoryId
-        //    };
-        //    //ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-        //    return View(post);
-        //}
+        // GET: Admin/Post/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            var result = await _managerService.Post.EditAsync(id, trackChanges: true);
+            if(result != null)
+            {
+                ViewBag.Categories = new SelectList(await _managerService.Category.GetAllAsync(trackChanges: false), "Id", "Name");
+                return View(result);
+            }
+            TempData["MessageError"] = $"Lỗi khi nhấn bài viết: {id} không thành công!";
+            return RedirectToAction("Index");
+        }
 
         //// POST: Admin/Post/Edit/5
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(int id, PostViewModel model)
-        //{
-        //    if (model.Image == null)
-        //    {
-        //        ModelState.Remove("Image");
-        //    }
-        //    if (ModelState.IsValid)
-        //    {
-        //        var post = await _repository.GetByIdAsync(id);
-        //        if (post == null)
-        //        {
-        //            //ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-        //            return View(model);
-        //        }
-        //        post.Title = model.Title;
-        //        post.Content = model.Content;
-        //        post.CategoryId = model.CategoryId;
-        //        post.Slug = SlugHelper.GenerateSlug(model.Title);
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, PostFormViewModel model)
+        {
+            if (model.Image == null)
+            {
+                ModelState.Remove("Image");
+            }
+            if (ModelState.IsValid)
+            {
+                var result = await _managerService.Post.UpdateAsync(id, model, trackChanges: true);
+                if (result)
+                {
+                    TempData["MessageSuccess"] = $"Chỉnh sửa bài viết: {model.Title} thành công.";
+                    return RedirectToAction("Index");
+                }
+                TempData["MessageError"] = $"Chỉnh sửa bài viết: {model.Title} không thành công!";
+                ViewBag.Categories = new SelectList(await _managerService.Category.GetAllAsync(trackChanges: false), "Id", "Name");
+                return View(model);
+            }
+            TempData["MessageError"] = $"Chỉnh sửa bài viết: {model.Title} không thành công!";
+            ViewBag.Categories = new SelectList(await _managerService.Category.GetAllAsync(trackChanges: false), "Id", "Name");
+            return View(model);
+        }
 
-        //        if (model.Image != null && model.Image.Length > 0)
-        //        {
-        //            var fileImage = Path.GetFileNameWithoutExtension(model.Image.FileName);
-        //            var fileExtension = Path.GetExtension(model.Image.FileName);
-        //            var fileName = $"{fileImage}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}{fileExtension}";
-        //            using(var stream = new FileStream(Path.Combine(_webHostEnvironment.WebRootPath,"images",fileName), FileMode.Create))
-        //            {
-        //                await model.Image.CopyToAsync(stream);
-        //            }
-        //            post.Image = fileName;
-        //        }
-               
-        //        await _repository.UpdateAsync(post);
-        //        return RedirectToAction("Index");
-        //    }
-        //    //ViewBag.Categories = new SelectList(await _categoryRepository.GetAllAsync(), "Id", "Name");
-        //    return View(model);
-        //}
+        [HttpPost]
+        public async Task<IActionResult> UpdateState(int id)
+        {
+            var result = await _managerService.Post.UpdateStateAsync(id, trackChanges: true);
+            if (result)
+            {
+                TempData["MessageSuccess"] = $"Chỉnh sửa trạng thái bài viết: {id} thành công.";
+                return RedirectToAction("Index");
+            }
+            TempData["MessageError"] = $"Chỉnh sửa trạng thái bài viết: {id} không thành công!";
+            return RedirectToAction("Index");
+        }
 
-
-        //// POST: Admin/Post/Delete/5
-        //[HttpPost]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    var post = await _repository.GetByIdAsync(id);
-        //    if (post != null)
-        //    {
-        //        post.State = 0;
-        //        await _repository.UpdateAsync(post);
-        //    }
-        //    return RedirectToAction("Index");
-        //}
-
-        
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _managerService.Post.DeleteAsync(id, trackChanges: true);
+            if (result)
+            {
+                TempData["MessageSuccess"] = $"Xóa bài viết: {id} thành công.";
+                return RedirectToAction("Index");
+            }
+            TempData["MessageError"] = $"Xóa bài viết: {id} không thành công!";
+            return RedirectToAction("Index");
+        }
     }
 }

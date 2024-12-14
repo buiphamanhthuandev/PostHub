@@ -6,7 +6,7 @@
     <img class="card-img-top " style="width:600px; height:500px" src="/Images/@Model.Post.Image" alt="@Model.Post.Image">
     <div class="card-body">
         <h5 class="card-title">@Model.Post.Title</h5>
-        <p class="card-text">@Model.Post.Content</p>
+        <p class="card-text">@Html.Raw(Model.Post.Content)</p>
     </div>
 </div>
 <div class="border card shadow-lg col-12" style="height:400px; overflow:hidden; position:relative; width:100%">
@@ -60,7 +60,7 @@
                     <img class="card-img-top " style="width:135px; height:60px" src="/Images/@post.Image" alt="@post.Image">
                     <div class="card-body">
                         <h5 class="card-title" style="font-size:14px">@post.Title</h5>
-                        <p class="card-text" style="font-size:12px">@post.Content.Substring(0, 50)...</p>
+                        <p class="card-text" style="font-size:12px">@Html.Raw(post.Content.Substring(0, 50))...</p>
                     </div>
                 </a>
             </div>

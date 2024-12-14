@@ -30,11 +30,16 @@ namespace PostHub.Repositories.Posts
         {
             if (!string.IsNullOrEmpty(nameSearch))
             {
-                return await _context.Posts.Where(p => p.State == 1 && p.Title.Contains(nameSearch)).Skip((Page - 1)  * PageSize).ToListAsync();
+                return await _context.Posts.Where(p => p.State == 1 && p.Title.Contains(nameSearch))
+                    .Skip((Page - 1)  * PageSize)
+                    .Take(PageSize).ToListAsync();
             }
             if (id != 0)
             {
-                return await _context.Posts.Where(p => p.State == 1 && p.CategoryId == id).Skip((Page - 1) * PageSize).ToListAsync();
+                return await _context.Posts.Where(p => p.State == 1 && p.CategoryId == id)
+                    .Skip((Page - 1) * PageSize).
+                    Take(PageSize).
+                    ToListAsync();
             }
             return await _context.Posts
                 .Where(p => p.State == 1)

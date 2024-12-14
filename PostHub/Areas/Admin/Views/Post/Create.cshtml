@@ -1,6 +1,15 @@
-﻿@model PostViewModel
+﻿@model PostFormViewModel
 @{
     ViewBag.Title = "Create Post";
+}
+@section Scripts {
+    <script src="/js/notification.js"></script>
+}
+@if (TempData["MessageError"] != null)
+{
+    <div id="messageError" class="bg-danger d-flex align-items-center text-white" style="height:50px;">
+        @TempData["MessageError"]
+    </div>
 }
 <h3><a asp-action="Index" class="text-decoration-none text-dark btn btn-primary">View All List Post</a></h3>
 <form method="post" asp-action="Create" asp-controller="Post" asp-area="Admin" enctype="multipart/form-data">
@@ -12,7 +21,7 @@
     </div>
     <div class="mb-3 form-group">
         <label asp-for="Content" class="form-label"></label>
-        <input asp-for="Content" class="form-control" />
+        <textarea id="Content" asp-for="Content" rows="10" class="form-control"></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
     <div class="mb-3 form-group">
@@ -29,3 +38,11 @@
         <input type="submit" class="btn btn-primary" value="Add" />
     </div>
 </form>
+<script>
+    CKEDITOR.replace('Content', {
+        entities: false,
+        entities_greek: false,
+        entities_latin: false
+    });
+
+</script>

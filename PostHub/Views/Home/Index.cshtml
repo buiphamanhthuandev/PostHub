@@ -1,9 +1,9 @@
-﻿@section Scripts {
-    <script src="/js/notification.js"></script>
-}
-@model HomeViewModel
+﻿@model HomeViewModel
 @{
     ViewBag.Title = "Trang chủ";
+}
+@section Scripts {
+    <script src="/js/notification.js"></script>
 }
 <h4><strong>Trang chủ</strong></h4>
 @if (TempData["MessageSuccess"] != null)
@@ -24,17 +24,17 @@
                 
     @foreach (var post in Model.Posts ?? Enumerable.Empty<Post>())
     {
-        <div class="card col-6" >
+        <div class="card col-5" style="width:400px">
             <a class="text-decoration-none" style="color:black;" asp-action="Detail" asp-controller="Home" asp-route-id="@post.Id">
                 <img class="card-img-top " style="width:350px; height:200px" src="/Images/@post.Image" alt="@post.Image">
                 <div class="card-body">
                     <h5 class="card-title">@post.Title</h5>
-                    <p class="card-text">@post.Content.Substring(0, 75)...</p>
+                    <p class="card-text" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">@Html.Raw(@post.Content)</p>
                 </div>
             </a> 
         </div>
     }
 </div>
-<div page-model="@Model.PagingInfo" page-action="Index" page-class="btn" page-url-category="@Model?.CurrentCategory" page-classes-enable="true" page-class-normal="btn-outline-dark" page-class-selected="btn-primary" class="btn-group m-1 text-black"></div>
+<div page-model="@Model.PagingInfo" page-action="Index" page-class="btn" page-url-nameSearch="@Model.NameSearch" page-url-category="@Model?.CurrentCategory" page-classes-enable="true" page-class-normal="btn-outline-dark" page-class-selected="btn-primary" class="btn-group m-1 text-black"></div>
 
         

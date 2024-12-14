@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PostHub.Areas.Admin.ViewModels
+namespace PostHub.Areas.Admin.ViewModels.PostViewModels
 {
-    public class PostViewModel
+    public class PostFormViewModel
     {
-        [Required(ErrorMessage ="Title is Required.")]
+        [Required(ErrorMessage = "Title is Required.")]
         public string Title { get; set; }
         [Required(ErrorMessage = "Content is Required.")]
         public string Content { get; set; }

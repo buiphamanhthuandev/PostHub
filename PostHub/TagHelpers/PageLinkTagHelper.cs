@@ -39,7 +39,7 @@ namespace PostHub.TagHelpers
                 TagBuilder result = new TagBuilder("div");
                 for (int i = 1; i <= PageModel.TotalPages; i++){
                     TagBuilder tag = new TagBuilder("a");
-                    PageUrlValues["Page"] = i;
+                    PageUrlValues["page"] = i;
                     tag.Attributes["href"] = urlHelper.Action(PageAction, PageUrlValues);
                     if (PageClassesEnable)
                     {
