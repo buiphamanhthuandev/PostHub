@@ -4,21 +4,33 @@ using PostHub.Models;
 
 namespace PostHub.Areas.Admin.Repositories.Comments
 {
-    public class EFCommentRepository : ICommentRepository
+    public class EFCommentRepository : GenericRepo<Comment>, ICommentRepository
     {
-        private PostHubDbContext _context;
+        public EFCommentRepository(PostHubDbContext context):base(context) { }
 
-        public EFCommentRepository(PostHubDbContext context)
+        public async Task<List<Comment>> GetPageLinkAsync(string nameSearch, int page, int pageSize, bool trackChanges)
         {
-            _context = context;
+            if (!string.IsNullOrEmpty(nameSearch))
+            {
+                return await PageLinkAsync(page, pageSize, trackChanges).Where(s => s.Content.Contains(nameSearch)).Include(c => c.User).Include(c => c.Post).ToListAsync();
+            }
+            return await PageLinkAsync(page, pageSize, trackChanges).Include(c => c.User).Include(c => c.Post).ToListAsync();
         }
-        public async Task<IEnumerable<Comment>> GetAllAsync()
+        public async Task<int> GetCountAsync(string nameSearch, bool trackChanges)
         {
-            return await _context.Comments.ToListAsync();
+            if (!string.IsNullOrEmpty(nameSearch))
+            {
+                return await FindAll(trackChanges).Where(s => s.Content.Contains(nameSearch)).CountAsync();
+            }
+            return await FindAll(trackChanges).CountAsync();
         }
-        public async Task<int> GetCount()
+        public void DeleteAsync(Comment comment)
         {
-            return await _context.Comments.CountAsync();
+            Delete(comment);
+        }
+        public async Task<Comment> GetByIdAsync(int id, bool trackChanges)
+        {
+            return await FindById(item => item.Id == id, trackChanges).FirstOrDefaultAsync();
         }
     }
 }

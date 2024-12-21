@@ -9,7 +9,6 @@ namespace PostHub.Areas.Admin.Services.Users
     {
         private readonly IManagerRepositoy _managerRepositoy;
         private readonly IWebHostEnvironment _webHostEnvironment;
-
         public UserService(IManagerRepositoy managerRepositoy, IWebHostEnvironment webHostEnvironment)
         {
             _managerRepositoy = managerRepositoy;
@@ -110,6 +109,31 @@ namespace PostHub.Areas.Admin.Services.Users
                     user.IsActive = user.IsActive == 1 ? 0 : 1;
                     _managerRepositoy.User.UpdateAsync(user);
                     await _managerRepositoy.SaveAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> CreateAccountAsync(string fullName, string email, string password, string role)
+        {
+            try
+            {
+                var user = new User
+                {
+                    FullName = fullName,
+                    Email = email,
+                    UserName = email,
+                };
+                var result = await _managerRepositoy.User.CreateAccountAsync(user, password);
+                if (result)
+                {
+                    await _managerRepositoy.User.AddToRoleAsync(user, role);
                     return true;
                 }
                 return false;

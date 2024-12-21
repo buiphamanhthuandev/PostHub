@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PostHub.Areas.Admin.Repositories.Users;
 using PostHub.Areas.Admin.Services.ManagerService;
+using PostHub.Areas.Admin.ViewModels.UserViewModel;
 using PostHub.Models;
 
 namespace PostHub.Areas.Admin.Controllers
@@ -71,6 +72,27 @@ namespace PostHub.Areas.Admin.Controllers
             }
             TempData["MessageError"] = $"Khóa tài khoản không thành công!";
             return RedirectToAction("Index");
+        }
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(UserFormViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _managerService.User.CreateAccountAsync(model.FullName, model.Email, model.Password, model.Role);
+                if (result)
+                {
+                    TempData["MessageSuccess"] = $"Thêm tài khoản thành công.";
+                    return RedirectToAction("Index");
+                }
+                TempData["MessageError"] = $"Thêm tài khoản không thành công!";
+                return View(model);
+            }
+            TempData["MessageError"] = $"Kiểm tra dữ liệu nhập!";
+            return View(model);
         }
     }
 }

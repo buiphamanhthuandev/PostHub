@@ -6,6 +6,8 @@ using PostHub.Areas.Admin.Repositories.Posts;
 using PostHub.Areas.Admin.Repositories.Subscribes;
 using PostHub.Areas.Admin.Repositories.Users;
 using PostHub.Data;
+using Microsoft.AspNetCore.Identity;
+using PostHub.Models;
 
 namespace PostHub.Areas.Admin.Repositories.ManagerRepository
 {
@@ -19,7 +21,7 @@ namespace PostHub.Areas.Admin.Repositories.ManagerRepository
         private readonly Lazy<IPostRepository> _postRepository;
         private readonly Lazy<ISubscribeRepository> _subscribeRepository;
         private readonly Lazy<IUserRepository> _userRepository;
-        public ManagerRepository(PostHubDbContext context)
+        public ManagerRepository(PostHubDbContext context, UserManager<User> userManager)
         {
             _context = context;
             _categoryTypeRepository = new Lazy<ICategoryTypeRepository>(() => new EFCategoryTypeRepository(context));
@@ -28,7 +30,7 @@ namespace PostHub.Areas.Admin.Repositories.ManagerRepository
             _contactRepository = new Lazy<IContactRepository>(() => new EFContactRepository(context));
             _postRepository = new Lazy<IPostRepository>(() => new EFPostRepository(context));
             _subscribeRepository = new Lazy<ISubscribeRepository>(() => new EFSubscribeRepository(context));
-            _userRepository = new Lazy<IUserRepository>(() => new EFUserRepository(context));
+            _userRepository = new Lazy<IUserRepository>(() => new EFUserRepository(context, userManager));
         }
         public ICategoryTypeRepository CategoryType => _categoryTypeRepository.Value;
         public ICategoryRepository Category => _categoryRepository.Value;

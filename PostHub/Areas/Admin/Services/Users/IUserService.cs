@@ -10,5 +10,6 @@ namespace PostHub.Areas.Admin.Services.Users
         Task<bool> UpdateProfileAsync(string id, string fullName, string phoneNumber, DateOnly dateOfBirth, bool trackChanges);
         Task<bool> UpdateProfileImageAsync(string id, IFormFile image, bool trackChanges);
         Task<bool> UpdateIsActive(string id, bool trackChanges);
+        Task<bool> CreateAccountAsync(string fullName, string email, string password, string role);
     }
 }

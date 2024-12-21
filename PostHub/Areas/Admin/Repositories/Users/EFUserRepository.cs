@@ -1,12 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PostHub.Data;
 using PostHub.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace PostHub.Areas.Admin.Repositories.Users
 {
     public class EFUserRepository : GenericRepo<User>, IUserRepository
     {
-        public EFUserRepository(PostHubDbContext context) : base(context) { }
+        private readonly UserManager<User> _userManager;
+        public EFUserRepository(PostHubDbContext context, UserManager<User> userManager) : base(context) {
+            _userManager = userManager;
+        }
         
         public async Task<List<User>> GetAllAsync(bool trackChanges)
         {
@@ -43,6 +47,17 @@ namespace PostHub.Areas.Admin.Repositories.Users
                 return await FindAll(trackChanges).Where(u => u.FullName.Contains(nameSearch)).CountAsync();
             }
             return await FindAll(trackChanges).CountAsync();
+        }
+
+        public async Task<bool> CreateAccountAsync(User user, string password)
+        {
+            var result = await _userManager.CreateAsync(user, password);
+            return result.Succeeded;
+        }
+
+        public async Task AddToRoleAsync(User user, string role)
+        {
+            await _userManager.AddToRoleAsync(user, role);
         }
     }
 }

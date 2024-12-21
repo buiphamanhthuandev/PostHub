@@ -7,6 +7,7 @@ using PostHub.Areas.Admin.Repositories.Contacts;
 using PostHub.Areas.Admin.Repositories.Posts;
 using PostHub.Areas.Admin.Repositories.Subscribes;
 using PostHub.Areas.Admin.Repositories.Users;
+using PostHub.Areas.Admin.Services.ManagerService;
 using System.Xml.Linq;
 
 namespace PostHub.Areas.Admin.Controllers
@@ -15,60 +16,55 @@ namespace PostHub.Areas.Admin.Controllers
     [Authorize(Roles ="admin")]
     public class HomeController : Controller
     {
-        //private readonly ICategoryTypeRepository _categoryTypeRepository;
-        //private readonly ICategoryRepository _categoryRepository;
-        //private readonly ICommentRepository _commentRepository;
-        //private readonly IContactRepository _contactRepository;
-        //private readonly IPostRepository _postRepository;
-        //private readonly ISubscribeRepository _subscribeRepository;
-        //private readonly IUserRepository _userRepository;
+        private readonly IManagerService _managerService;
 
-        //public HomeController(ICategoryTypeRepository categoryTypeRepository, ICategoryRepository categoryRepository, ICommentRepository commentRepository, IContactRepository contactRepository, IPostRepository postRepository, ISubscribeRepository subscribeRepository, IUserRepository userRepository)
-        //{
-        //    _categoryTypeRepository = categoryTypeRepository;
-        //    _categoryRepository = categoryRepository;
-        //    _commentRepository = commentRepository;
-        //    _contactRepository = contactRepository;
-        //    _postRepository = postRepository;
-        //    _subscribeRepository = subscribeRepository;
-        //    _userRepository = userRepository;
-        //}
-       
-        //public async Task<IActionResult> Index(string nameManager)
-        //{
-        //    if (!string.IsNullOrEmpty(nameManager))
-        //    {
-        //        string[] listManager = { "Dashbroad", "CategoryType", "Category", "Post", "Contact", "Account" };
-        //        foreach (string name in listManager)
-        //        {
-        //            if(name.Contains(nameManager))
-        //            {
-        //                switch (name)
-        //                {
-        //                    case "Dashbroad":
-        //                        return RedirectToAction("Index", "Home", new { area = "Admin" });
-        //                    case "CategoryType":
-        //                        return RedirectToAction("Index", "CategoryType", new { area = "Admin" });
-        //                    case "Category":
-        //                        return RedirectToAction("Index", "Category", new { area = "Admin" });
-        //                    case "Post":
-        //                        return RedirectToAction("Index", "Post", new { area = "Admin" });
-        //                    case "Contact":
-        //                        return RedirectToAction("Index", "Contact", new { area = "Admin" });
-        //                    case "Account":
-        //                        return RedirectToAction("Index", "User", new { area = "Admin" });
-        //                }
-        //            }
-        //        }
-        //    }
-        //    //ViewBag.GetCountCateTypes = await _categoryTypeRepository.GetCount();
-        //    ViewBag.GetCountCates = await _categoryRepository.GetCount();
-        //    ViewBag.GetCountComments = await _commentRepository.GetCount();
-        //    ViewBag.GetCountContacts = await _contactRepository.GetCount();
-        //    ViewBag.GetCountPosts = await _postRepository.GetCount();
-        //    ViewBag.GetCountSubs = await _subscribeRepository.GetCount();
-        //    ViewBag.GetCountUsers = await _userRepository.GetCount();
-        //    return View();
-        //}
+        public HomeController(IManagerService managerService)
+        {
+            _managerService = managerService;
+        }
+
+        public async Task<IActionResult> Index(string nameManager)
+        {
+            if (!string.IsNullOrEmpty(nameManager))
+            {
+                string temp = nameManager.ToLower();
+                string[] listManager = { "dashbroad", "categorytype", "category", "post", "contact", "account", "subscribe", "comment" };
+                foreach (string name in listManager)
+                {
+                    
+                    if (name.Contains(temp))
+                    {
+                        switch (name)
+                        {
+                            case "dashbroad":
+                                return RedirectToAction("Index", "Home", new { area = "Admin" });
+                            case "categorytype":
+                                return RedirectToAction("Index", "CategoryType", new { area = "Admin" });
+                            case "category":
+                                return RedirectToAction("Index", "Category", new { area = "Admin" });
+                            case "post":
+                                return RedirectToAction("Index", "Post", new { area = "Admin" });
+                            case "contact":
+                                return RedirectToAction("Index", "Contact", new { area = "Admin" });
+                            case "account":
+                                return RedirectToAction("Index", "User", new { area = "Admin" });
+                            case "subscribe":
+                                return RedirectToAction("Index", "Subscribe", new { area = "Admin" });
+                            case "comment":
+                                return RedirectToAction("Index", "Comment", new { area = "Admin" });
+                        }
+                    }
+                }
+            }
+            var result = await _managerService.Home.GetDashbroadAsync(trackChange: false);
+            ViewBag.GetCountCateTypes = result.CategoryTypeCounts;
+            ViewBag.GetCountCates = result.CategoryCounts;
+            ViewBag.GetCountComments = result.CommentCounts;
+            ViewBag.GetCountContacts = result.ContactCounts;
+            ViewBag.GetCountPosts = result.PostCounts;
+            ViewBag.GetCountSubs = result.SubscribeCounts;
+            ViewBag.GetCountUsers = result.UserCounts;
+            return View();
+        }
     }
 }

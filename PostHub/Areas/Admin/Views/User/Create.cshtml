@@ -1,0 +1,43 @@
+﻿@model UserFormViewModel
+@{
+    ViewBag.Title = "Create account";
+}
+@section Scripts {
+    <script src="/js/notification.js"></script>
+}
+@if (TempData["MessageError"] != null)
+{
+    <div id="messageError" class="bg-danger d-flex align-items-center text-white" style="height:50px;">
+        @TempData["MessageError"]
+    </div>
+}
+<h3><a asp-action="Index" class="text-decoration-none text-white btn btn-primary">Danh sách tài khoản</a></h3>
+<form method="post" asp-action="Create" asp-controller="User" asp-area="Admin">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="mb-3 form-group">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-group">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control"/>
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-group">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-group">
+        <label asp-for="Role" class="form-label"></label>
+        <select asp-for="Role" class="form-control">
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+        </select>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-group">
+        <input type="submit" class="btn btn-primary" value="Add" />
+    </div>
+</form>

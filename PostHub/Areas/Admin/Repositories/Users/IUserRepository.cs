@@ -11,5 +11,7 @@ namespace PostHub.Areas.Admin.Repositories.Users
         void CreateAsync(User user);
         void UpdateAsync(User user);
         Task<int> GetCountAsync(string nameSearch, bool trackChanges);
+        Task<bool> CreateAccountAsync(User user, string password);
+        Task AddToRoleAsync(User user, string role);
     }
 }

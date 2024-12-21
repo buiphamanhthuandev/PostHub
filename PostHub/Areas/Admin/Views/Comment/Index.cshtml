@@ -1,6 +1,6 @@
-﻿@model SubscribeViewModel
+﻿@model CommentViewModel
 @{
-    ViewBag.Title = "Index Subscribe";
+    ViewBag.Title = "Index Comment";
 }
 @section Scripts {
     <script src="/js/notification.js"></script>
@@ -20,9 +20,9 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary"><a asp-action="Index" asp-controller="Subscribe" asp-area="Admin">Danh sách đăng ký</a></h6>
+        <h6 class="m-0 font-weight-bold text-primary"><a asp-action="Index" asp-controller="Comment" asp-area="Admin">Danh sách bình luận</a></h6>
         <div class="float-right">
-            <form asp-action="Index" asp-controller="Subscribe" asp-area="Admin" method="get">
+            <form asp-action="Index" asp-controller="Comment" asp-area="Admin" method="get">
                 <div class="input-group">
                     <input name="nameSearch" class="form-control" placeholder="Tìm kiếm theo email..." />
                     <input type="submit" value="Tìm kiếm" class="btn btn-primary" />
@@ -35,25 +35,34 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Email</th>
+                    <th>Content</th>
+                    <th>CreatedAt</th>
+                    <th>User</th>
+                    <th>PostId</th>
                     <th>Del</th>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
                     <th>Id</th>
-                    <th>Email</th>
+                    <th>Content</th>
+                    <th>CreatedAt</th>
+                    <th>User</th>
+                    <th>PostId</th>
                     <th>Del</th>
                 </tr>
             </tfoot>
             <tbody>
-                @foreach (var c in Model.Subscribes ?? Enumerable.Empty<Subscribe>())
+                @foreach (var c in Model.Comments ?? Enumerable.Empty<Comment>())
                 {
                     <tr>
                         <td>@c.Id</td>
-                        <td>@c.Email</td>
+                        <td>@c.Content</td>
+                        <td>@c.CreatedAt</td>
+                        <td>@c.User.FullName</td>
+                        <td>@c.Post.Title</td>
                         <td>
-                            <form asp-action="Delete" asp-controller="Subscribe" asp-area="Admin" method="post">
+                            <form asp-action="Delete" asp-controller="Comment" asp-area="Admin" method="post">
                                 <input type="hidden" name="id" value="@c.Id" />
                                 <input type="submit" name="del" value="Del" class="btn btn-danger" />
                             </form>
